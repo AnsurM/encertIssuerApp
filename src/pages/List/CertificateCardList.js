@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { Card, Icon, Avatar, Col, Row, List, Modal, Button } from 'antd';
+import UserInfo from '../User/UserInfo';
+import {getFireBaseData} from '../../services/api';
+import firebase, { app } from 'firebase';
+
 
 const { Meta } = Card;
 
@@ -26,6 +30,39 @@ const data = [
   
 
 class CertificateCardList extends Component {
+
+state={
+  myData:{}
+}
+
+  componentDidMount(){
+    const myUid = UserInfo.getUID();
+    let that = this;
+
+    getFireBaseData("/certificatesList")
+    .then(response => {
+      console.log("Data ", response);
+      let myresp = response.map(element => {
+          return {certificate_list_id: element.id,
+            certificate_acievement_title:element.achievementTitle,
+            certificate_domain:element.domain,
+            certificate_cover_image: element.coverImage,
+            certificate_receiver_name: element.receiverName,
+            certificate_blockstack_Id: element.blockstackId,
+            certificate_issuer_name: element.issuerName,
+            certificate_description: element.description,
+            certificate_issue_date: element.issueDate,
+            certificate_expiration_date: element.expirationDate,
+            certificate_signature: element.signature
+          };
+      });
+      console.log(myresp);
+        this.setState({myData: myresp});
+        console.log(that.state.myData,"certificates");
+    })
+    .catch(error => console.log('error ', error));
+
+  }
 
     state = {
         loading: false,
