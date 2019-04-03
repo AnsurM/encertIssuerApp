@@ -79,8 +79,30 @@ state={
             issueDate: "",
             expirationDate: "",
             signature: ""            
-        }
-    };
+          }
+        };
+        
+        showModal = (event) => {
+          this.setState({
+            clickedCertificate:{
+              ID:event.certificate_list_id,
+              achievementTitle:event.certificate_acievement_title,
+              domain:event.certificate_domain,
+              blockstackID:event.certificate_blockstack_Id,
+              issuerName:event.certificate_issuer_name,
+              description:event.certificate_description,
+              issueDate:event.certificate_issue_date,
+              expirationDate:event.certificate_expiration_date,
+              signature:event.certificate_expiration_date,
+              receiverName:event.certificate_receiver_name
+            }
+          })
+          console.log(event,"event");
+            this.setState({
+              visible: true,
+            });
+          }
+
 
     onSearchChange = (value) => {
         const input = value;
@@ -108,11 +130,6 @@ state={
           }
     }
 
-    showModal = () => {
-        this.setState({
-          visible: true,
-        });
-      }
     
       handleOk = () => {
         this.setState({ loading: false, visible: false });
@@ -138,20 +155,21 @@ state={
                         grid={{
                         gutter: 40, xs: 1, sm: 2, md: 3, lg: 4
                         }}
-                        dataSource={data}
+                        dataSource={this.state.myData}
                         renderItem={item => (
-                        <List.Item>
-                            {/* <Card title={item.title}>Card content</Card> */}
+                          <List.Item>
+                          
+                            {/* <Card title={item.title}>Card content</Card>   (this.state.myData)*/ }
                             <Card
-                                onClick={this.showModal}                        
+                                onClick={()=>this.showModal(item)}                        
                                 style={{ width: "100%" }}
                                 cover={<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />}
                                 // actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
                             >
                                 <Meta
                                 avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                title="Card title"
-                                description="This is the description"
+                                title={item.certificate_acievement_title}
+                                description={item.certificate_description}
                                 />
                             </Card>                
                         </List.Item>
