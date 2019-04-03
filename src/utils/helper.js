@@ -22,6 +22,7 @@ export const post_request = async (url, user_data) => {
             body: JSON.stringify(user_data)
         });
         const content = await rawResponse.json();
+          
         console.log(content);
         return content;
     };
