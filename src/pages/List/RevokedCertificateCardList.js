@@ -2,37 +2,40 @@ import React, { Component } from 'react';
 import { Card, Icon, Avatar, Col, Row, List, Modal, Button, Input } from 'antd';
 import { EventEmitter } from 'events';
 import { message } from 'antd';
-
+import { getFireBaseData } from '../../services/api';
 const { Meta } = Card;
 const { TextArea } = Input;
-const data = [
-    {
-      title: 'Title 1',
-    },
-    {
-      title: 'Title 2',
-    },
-    {
-      title: 'Title 3',
-    },
-    {
-      title: 'Title 4',
-    },
-    {
-      title: 'Title 5',
-    },
-    {
-      title: 'Title 6',
-    },
-  ];
-  
-
+const mockData = [
+  {
+    "achievement_title": "5ca89431388afd9645d0c8fc",
+    "blockstack_id": "5ca894318dab457137179965",
+    "cover_image": "http://placehold.it/32x32",
+    "description": "Id ullamco officia dolor esse do non ut. Officia veniam do consequat est ea. Dolor exercitation exercitation do officia ipsum velit ea non id. Cupidatat non minim sint ex amet. Ut occaecat magna ea laborum cillum est ea id culpa excepteur ex tempor.\r\n",
+    "domain": "ZENSUS",
+    "expiration_date": "2015-12-19T03:13:55 -05:00",
+    "issue_date": "2014-10-29T02:15:52 -05:00",
+    "issuer_name": "Lloyd Terrell",
+    "receiver_name": "Lidia Woodward",
+    "id": "5ca89431183d8aa1e52d848e"
+  },
+  {
+    "achievement_title": "5ca894313f8686eb3da004af",
+    "blockstack_id": "5ca89431da3f48a8a8b09767",
+    "cover_image": "http://placehold.it/32x32",
+    "description": "Esse fugiat in cupidatat in laborum ipsum occaecat proident voluptate labore pariatur ut. Aute Lorem cupidatat in proident eiusmod anim eu amet veniam. Deserunt tempor anim ullamco ad cupidatat esse pariatur magna dolor duis adipisicing duis reprehenderit elit.\r\n",
+    "domain": "ISOSPHERE",
+    "expiration_date": "2017-09-12T12:59:12 -05:00",
+    "issue_date": "2016-08-16T11:43:37 -05:00",
+    "issuer_name": "Jodi Mckinney",
+    "receiver_name": "Diann Everett",
+    "id": "5ca8943102f956339fa4875a"
+  }];
 class RevokedCertificateCardList extends Component {
-
     state = {
         loading: false,
         revokedIsVisible: false,
         revokeCertificateIsVisible: false,
+      myData : {},
         clickedCertificate: {
           ID:"",
           achievementTitle:"",
@@ -44,7 +47,7 @@ class RevokedCertificateCardList extends Component {
           description: "",
           issueDate: "",
           revokedDate: "",
-          reason: ""            
+          reason: ""
         },
         revokeCertificate: {
           holder: "",
@@ -53,14 +56,11 @@ class RevokedCertificateCardList extends Component {
         revokeHolder: "",
         revokeReason: ""
     };
-
     onSearchChange = (value) => {
         const input = value;
         this.setState({searchInput: value});
         let newData = Object.values(this.state.myData);
-    
         let processedData = [];
-    
         newData.forEach((element) =>
           {
             if((element.receiver_name.includes(input)) || (element.receiver_blockstack_id.includes(input)))
@@ -76,40 +76,35 @@ class RevokedCertificateCardList extends Component {
           }
           else
           {
-            this.setState({searchData: processedData});        
+            this.setState({searchData: processedData});
           }
     }
-
     showModal = () => {
         this.setState({
           revokedIsVisible: true,
         });
       }
-    
       handleOk = () => {
         this.setState({ loading: false, revokedIsVisible: false });
       }
-    
       handleCancel = () => {
         this.setState({ revokedIsVisible: false });
       }
-
       showRevokeModal = () => {
         this.setState({
           revokeCertificateIsVisible: true,
         });
       }
-    
       handleRevokeOk = () => {
         this.setState({ loading: true });
         if(this.state.revokeHolder.length > 0)
         {
           if(this.state.revokeReason.length > 0)
-          { 
+          {
             this.setState({revokeCertificate: {
             holder: this.state.revokeHolder,
             reason: this.state.revokeReason
-            }}); 
+            }});
             setTimeout(() => {
               this.setState({ loading: false, revokeCertificateIsVisible: false });
             }, 2000);
@@ -118,19 +113,16 @@ class RevokedCertificateCardList extends Component {
         else
         {
           message.error("Input fields can't be empty");
-          this.setState({loading: false});      
+          this.setState({loading: false});
         }
       }
-    
       handleRevokeCancel = () => {
         this.setState({ revokeCertificateIsVisible: false });
       }
-      
       onRevokeCert = () =>
       {
         this.showRevokeModal();
       }
-
       onRevokeInputChange = (event) =>
       {
         if(event.target)
@@ -147,15 +139,41 @@ class RevokedCertificateCardList extends Component {
           }
         }
       }
-
+  componentDidMount() {
+    getFireBaseData('/revokedCertificatesList')
+      .then(response => {
+        console.log('Data ', response);
+        let myresp = response.map(element => {
+          return {
+            achievement_title: element.achievement_title,
+            cover_image : element.cover_image,
+            description : element.description,
+            domain : element.domain,
+            expiration_date : element.expiration_date,
+            id : element.id,
+            issue_date : element.issue_date,
+            issuer_name : element.issuer_name,
+            receiver_name : element.receiver_name,
+            blockstack_id: element.blockstack_id
+          };
+        });
+        this.setState({ myData: myresp });
+      })
+      .catch(error => console.log('error ', error));
+  }
     render() {
+      var myData = null;
+      if (this.state.myData.length) {
+        myData = this.state.myData;
+      } else {
+        myData = mockData;
+      }
         const { revokedIsVisible, revokeCertificateIsVisible, loading } = this.state;
-        
         return (
             <div>
                 <br />
                 <h2>All Revoked Certificates</h2>
-                <Button type="danger" size="large" onClick = {this.onRevokeCert}>Revoke a Certificate</Button>                
+                <Button type="danger" size="large" onClick = {this.onRevokeCert}>Revoke a Certificate</Button>
                 <br />
                 <br />
                 <div>
@@ -165,27 +183,27 @@ class RevokedCertificateCardList extends Component {
                         grid={{
                         gutter: 40, xs: 1, sm: 2, md: 3, lg: 4
                         }}
-                        dataSource={data}
+                        dataSource={myData}
                         renderItem={item => (
                         <List.Item>
                             {/* <Card title={item.title}>Card content</Card> */}
                             <Card
-                                onClick={this.showModal}                        
+                                onClick={this.showModal}
                                 style={{ width: "100%" }}
                                 cover={<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />}
                                 // actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
                             >
                                 <Meta
                                 avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                title="Card title"
-                                description="This is the description"
+                                title= {item.receiver_name}
+                                description={item.domain}
                                 />
-                            </Card>                
+                            </Card>
                         </List.Item>
                         )}
                     />
                     </Row>
-                </div> 
+                </div>
                 <div>
                         <Modal
                     visible={revokedIsVisible}
@@ -209,9 +227,8 @@ class RevokedCertificateCardList extends Component {
                     <p>{`Issue Date: ${this.state.clickedCertificate.issueDate}`}</p>
                     <p>{`Revoked Date: ${this.state.clickedCertificate.revokedDate}`}</p>
                     <p>{`Reason of Revocation: ${this.state.clickedCertificate.reason}`}</p>
-
                     </Modal>
-                </div>            
+                </div>
                 <div>
                         <Modal
                     visible={revokeCertificateIsVisible}
@@ -230,12 +247,9 @@ class RevokedCertificateCardList extends Component {
                     <p>Reason of Revocation: </p>
                     <TextArea id="revReason" rows={4} onChange={this.onRevokeInputChange}/>
                     </Modal>
-                </div>            
+                </div>
             </div>
             );
     }
 }
-
 export default RevokedCertificateCardList;
-
-

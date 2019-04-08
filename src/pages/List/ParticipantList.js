@@ -154,11 +154,11 @@ class ParticipantList extends Component {
     const myUid = UserInfo.getUID();
       let that = this;
 
-      getFireBaseData("/issuers")
+      getFireBaseData("/participants")
       .then(response => {
         console.log("Data ", response);
         let myresp = response.map(element => {
-            return {issuer_blockstack_id: element.issuer_blockstack_id, issuer_name:element.issuer_name};
+            return {receiver_blockstack_id: element.receiver_blockstack_id, receiver_name:element.receiver_name};
         });
         console.log(myresp);
           this.setState({myData: myresp});
@@ -241,19 +241,19 @@ class ParticipantList extends Component {
         </div>,
         <Table dataSource={myData} onRowClick={this.onRClick}>
           <Column
-            title="Issuer Name"
-            dataIndex="issuer_name"
-            key="issuer_name"
+            title="Receiver Name"
+            dataIndex="receiver_name"
+            key="receiver_name"
           />
           <Column
-            title="Issuer ID"
-            dataIndex="issuer_blockstack_id"
-            key="issuer_blockstack_id"
+            title="Receiver ID"
+            dataIndex="receiver_blockstack_id"
+            key="receiver_blockstack_id"
           />
           <Column
-            title="Issuer Email"
-            dataIndex="issuer_email"
-            key="issuer_email"
+            title="Receiver Email"
+            dataIndex="receiver_email"
+            key="receiver_email"
           />
           <Column
             title="Team Name"
