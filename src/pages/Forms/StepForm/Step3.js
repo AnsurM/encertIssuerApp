@@ -6,11 +6,12 @@ import Result from '@/components/Result';
 import styles from './style.less';
 
 @connect(({ form }) => ({
-  data: form.step,
+  data: form.certificate,
 }))
 class Step3 extends React.PureComponent {
   render() {
     const { data } = this.props;
+    console.log(data,"in step 3");
     const onFinish = () => {
       router.push('/certificates');
     };
@@ -18,34 +19,34 @@ class Step3 extends React.PureComponent {
       <div className={styles.information}>
         <Row>
           <Col xs={24} sm={8} className={styles.label}>
-            付款账户：
+            Achievement Title：
           </Col>
           <Col xs={24} sm={16}>
-            {data.payAccount}
+            {data.achievement_title}
           </Col>
         </Row>
         <Row>
           <Col xs={24} sm={8} className={styles.label}>
-            收款账户：
+            Domain：
           </Col>
           <Col xs={24} sm={16}>
-            {data.receiverAccount}
+            {data.domain}
           </Col>
         </Row>
         <Row>
           <Col xs={24} sm={8} className={styles.label}>
-            收款人姓名：
+            Event：
           </Col>
           <Col xs={24} sm={16}>
-            {data.receiverName}
+            {data.event_name}
           </Col>
         </Row>
         <Row>
           <Col xs={24} sm={8} className={styles.label}>
-            转账金额：
+            Issue Date：
           </Col>
           <Col xs={24} sm={16}>
-            <span className={styles.money}>{data.amount}</span> 元
+            {data.issue_date}
           </Col>
         </Row>
       </div>
@@ -53,16 +54,16 @@ class Step3 extends React.PureComponent {
     const actions = (
       <Fragment>
         <Button type="primary" onClick={onFinish}>
-          再转一笔
+          Finish
         </Button>
-        <Button>查看账单</Button>
+        {/* <Button>查看账单</Button> */}
       </Fragment>
     );
     return (
       <Result
         type="success"
-        title="操作成功"
-        description="预计两小时内到账"
+        title="Success"
+        description="Your certificate has been sent"
         extra={information}
         actions={actions}
         className={styles.result}

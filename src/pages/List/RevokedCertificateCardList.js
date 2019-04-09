@@ -47,7 +47,8 @@ class RevokedCertificateCardList extends Component {
           description: "",
           issueDate: "",
           revokedDate: "",
-          reason: ""
+          reason: "",
+          expirationDate:''
         },
         revokeCertificate: {
           holder: "",
@@ -79,9 +80,24 @@ class RevokedCertificateCardList extends Component {
             this.setState({searchData: processedData});
           }
     }
-    showModal = () => {
+    showModal = (event) => {
+      console.log(event);
         this.setState({
           revokedIsVisible: true,
+        clickedCertificate: {
+          ID:event.id,
+          achievementTitle:event.achievement_title,
+          domain:event.domain,
+          coverImage: event.cover_image,
+          receiverName: event.receiver_name,
+          blockstackID: event.blockstack_id,
+          issuerName: event.issuer_name,
+          description: event.description,
+          issueDate: event.issue_date,
+          // revokedDate: "",
+          // reason: "",
+          expirationDate:event.expiration_date
+        },    
         });
       }
       handleOk = () => {
@@ -188,9 +204,9 @@ class RevokedCertificateCardList extends Component {
                         <List.Item>
                             {/* <Card title={item.title}>Card content</Card> */}
                             <Card
-                                onClick={this.showModal}
+                                onClick={()=>this.showModal(item)}
                                 style={{ width: "100%" }}
-                                cover={<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />}
+                                cover={<img alt="example" src={item.cover_image} />}
                                 // actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
                             >
                                 <Meta
@@ -222,11 +238,12 @@ class RevokedCertificateCardList extends Component {
                     <p>{`Cover Image: ${this.state.clickedCertificate.coverImage}`}</p>
                     <p>{`Receiver Name: ${this.state.clickedCertificate.receiverName}`}</p>
                     <p>{`Blockstack ID: ${this.state.clickedCertificate.blockstackID}`}</p>
-                    <p>{`Issuer Name: ${this.state.clickedCertificate.coverImage}`}</p>
+                    <p>{`Issuer Name: ${this.state.clickedCertificate.issuerName}`}</p>
                     <p>{`Description: ${this.state.clickedCertificate.description}`}</p>
                     <p>{`Issue Date: ${this.state.clickedCertificate.issueDate}`}</p>
-                    <p>{`Revoked Date: ${this.state.clickedCertificate.revokedDate}`}</p>
-                    <p>{`Reason of Revocation: ${this.state.clickedCertificate.reason}`}</p>
+                    <p>{`Expiration Date: ${this.state.clickedCertificate.expirationDate}`}</p>
+                    {/* <p>{`Revoked Date: ${this.state.clickedCertificate.revokedDate}`}</p>
+                    <p>{`Reason of Revocation: ${this.state.clickedCertificate.reason}`}</p> */}
                     </Modal>
                 </div>
                 <div>

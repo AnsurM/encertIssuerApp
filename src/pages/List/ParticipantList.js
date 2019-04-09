@@ -44,6 +44,7 @@ class ParticipantList extends Component {
   {
     super(props);
     this.state = {
+      participantsData:{},
       myData: {},
       searchData: {},
       searchInput: "",
@@ -54,7 +55,7 @@ class ParticipantList extends Component {
       visible: false,
       expDate: "",
       menu: null,
-      menu1: null
+      menu1: null,
     }
   }
 
@@ -123,6 +124,25 @@ class ParticipantList extends Component {
   }
 
   componentDidMount() {
+    axios.get("http://192.168.0.107:7001/issuer/participant")
+    .then((response) => {
+      // if(response.data[0].address) {
+        console.log("data  from server",response.data.data.results);
+        this.setState({
+          participantsData:response.data.data.results
+        })
+        console.log(this.state.participantsData)
+        // this.setState({
+        //   myData: response.data,
+        //   data: response.data,
+        //   response: response
+        // });
+      // }
+    })
+    .catch(error => {
+    });
+
+
     this.setState({menu: (  
           <Menu id="subjects" onClick={this.onSelectDropDown}>
             <Menu.Item>
@@ -154,17 +174,17 @@ class ParticipantList extends Component {
     const myUid = UserInfo.getUID();
       let that = this;
 
-      getFireBaseData("/participants")
-      .then(response => {
-        console.log("Data ", response);
-        let myresp = response.map(element => {
-            return {receiver_blockstack_id: element.receiver_blockstack_id, receiver_name:element.receiver_name};
-        });
-        console.log(myresp);
-          this.setState({myData: myresp});
-          console.log(that.state.myData);
-      })
-      .catch(error => console.log('error ', error));
+      // getFireBaseData("/participants")
+      // .then(response => {
+      //   console.log("Data ", response);
+      //   let myresp = response.map(element => {
+      //       return {receiver_blockstack_id: element.receiver_blockstack_id, receiver_name:element.receiver_name};
+      //   });
+      //   console.log(myresp);
+      //     this.setState({myData: myresp});
+      //     console.log(that.state.myData);
+      // })
+      // .catch(error => console.log('error ', error));
   }
 
     showModal = () => {
@@ -210,16 +230,32 @@ class ParticipantList extends Component {
 
   render()
   {
-    var myData = null;
+    // var myData = null;
+    // if(this.state.searchInput.length)
+    // {
+    //   myData = this.state.searchData;
+    // }
+    // else
+    // {
+    //   if(this.state.myData.length)
+    //   {
+    //       myData = this.state.myData;
+    //   }
+    //   else
+    //   {
+    //     // myData = mockData;
+    //   }
+    // }
+    var participantsData = null;
     if(this.state.searchInput.length)
     {
-      myData = this.state.searchData;
+      participantsData = this.state.searchData;
     }
     else
     {
-      if(this.state.myData.length)
+      if(this.state.participantsData.length)
       {
-          myData = this.state.myData;
+          participantsData = this.state.participantsData;
       }
       else
       {
@@ -239,26 +275,26 @@ class ParticipantList extends Component {
           />
           <br /><br />
         </div>,
-        <Table dataSource={myData} onRowClick={this.onRClick}>
+        <Table dataSource={participantsData} onRowClick={this.onRClick}>
           <Column
             title="Receiver Name"
-            dataIndex="receiver_name"
-            key="receiver_name"
+            dataIndex="name"
+            key="name"
           />
           <Column
             title="Receiver ID"
-            dataIndex="receiver_blockstack_id"
-            key="receiver_blockstack_id"
+            dataIndex="blockstack_id"
+            key="blockstack_id"
           />
           <Column
             title="Receiver Email"
-            dataIndex="receiver_email"
-            key="receiver_email"
+            dataIndex="email"
+            key="email"
           />
           <Column
             title="Team Name"
-            dataIndex="team_name"
-            key="team_name"
+            dataIndex="team"
+            key="team"
           />
          {/* <Column
            title="Action"

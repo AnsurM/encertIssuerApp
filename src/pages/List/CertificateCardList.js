@@ -44,15 +44,15 @@ state={
       console.log("Data ", response);
       let myresp = response.map(element => {
           return {certificate_list_id: element.id,
-            certificate_acievement_title:element.achievementTitle,
+            certificate_acievement_title:element.achievement_title,
             certificate_domain:element.domain,
-            certificate_cover_image: element.coverImage,
-            certificate_receiver_name: element.receiverName,
-            certificate_blockstack_Id: element.blockstackId,
-            certificate_issuer_name: element.issuerName,
+            certificate_cover_image: element.cover_image,
+            certificate_receiver_name: element.receiver_name,
+            certificate_blockstack_Id: element.blockstack_id,
+            certificate_issuer_name: element.issuer_name,
             certificate_description: element.description,
-            certificate_issue_date: element.issueDate,
-            certificate_expiration_date: element.expirationDate,
+            certificate_issue_date: element.issue_date,
+            certificate_expiration_date: element.expiration_date,
             certificate_signature: element.signature
           };
       });

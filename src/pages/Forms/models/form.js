@@ -6,6 +6,13 @@ export default {
   namespace: 'form',
 
   state: {
+    certificate:{
+      event_name:'name',
+      domain:'web development',
+      description:'asdasd',
+      issue_date:"",
+      achievement_title:''
+    },
     step: {
       payAccount: 'ant-design@alipay.com',
       receiverAccount: 'test@example.com',
@@ -35,12 +42,23 @@ export default {
 
   reducers: {
     saveStepFormData(state, { payload }) {
+      console.log(payload,"in reducer");
+      
       return {
         ...state,
-        step: {
-          ...state.step,
-          ...payload,
-        },
+        // certificate : payload
+        certificate: {
+          ...state.certificate,
+          ...payload           
+        }
+      //   certificate: {
+      // event_name:payload.event_name,
+      // domain:payload.domain,
+      // description:payload.description,
+      // issue_date:payload.issue_date,
+      // achievement_title:payload.achievement_title,  
+      //   }
+        
       };
     },
   },
