@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Select, Divider, DatePicker  } from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker } from 'antd';
 import router from 'umi/router';
 import styles from './style.less';
-
+const axios = require('axios');
 const { Option } = Select;
 
 const children = [];
@@ -29,58 +29,102 @@ const formItemLayout = {
 class Step1 extends React.PureComponent {
 
 
+  state = {
+    event_name: " asdasd",
+    domain: '',
+    description: '',
+    issue_date: '',
+    achievement_title: '',
+    participants: '',
+    participantsData: {},
+    participantsSelectionData: []
+  }
 
-  state={
-      event_name:" asdasd",
-      domain:'',
-      description:'',
-      issue_date:'',
-      achievement_title:'',
-      participants:''        
+  componentDidMount() {
+    axios.get("http://192.168.0.107:7001/issuer/participant")
+      .then((response) => {
+        // if(response.data[0].address) {
+        console.log("data  from server", response.data.data.results);
+        this.setState({
+          participantsData: response.data.data.results
+        })
+
+        console.log(this.state.participantsData)
+        this.generateParticipantsListOptions();
+        // this.setState({
+        //   myData: response.data,
+        //   data: response.data,
+        //   response: response
+        // });
+        // }
+
+
+        // let myresp = this.state.participantsData.map(element => {
+        //         return (<Option key={element.blockstack_id}>{element.name}</Option>);
+        //     });
+        //     console.log(myresp)
+        //     this.setState({
+        //       participantsSelectionData:myresp
+        //     })
+      })
+      .catch(error => {
+      });
+  }
+
+  generateParticipantsListOptions() {
+    console.log("here")
+    let arr = []
+    for (let i = 0; i < this.state.participantsData.length; i++) {
+      arr.push(<Option key={this.state.participantsData[i].blockstack_id}>{this.state.participantsData[i].name}</Option>);
+    }
+    this.setState({
+      participantsSelectionData: arr
+    });
+    console.log(this.state.participantsSelectionData)
   }
 
   handleChange(value) {
     console.log(`selected ${value}`);
   }
-  
+
   achievementHandleChange(event) {
     console.log(event.target.value, "title")
     this.setState({
-      
-        achievement_title:event.target.value     
-      
+
+      achievement_title: event.target.value
+
     })
   }
-  
+
   eventHandleChange(event) {
     console.log(event.target.value, "event name")
     this.setState({
-      
-        event_name:event.target.value     
-      
+
+      event_name: event.target.value
+
     })
   }
-  
+
   domainHandleChange(event) {
     console.log(event.target.value, "domain")
     this.setState({
-       domain:event.target.value          
+      domain: event.target.value
     })
   }
-  
+
   descriptionHandleChange(event) {
     console.log(event.target.value, "description")
     this.setState({
-        description:event.target.value         
+      description: event.target.value
     })
   }
-  
+
   onDateChange(date, dateString) {
     console.log(date, dateString);
     this.setState({
-      
-        issue_date:dateString     
-      
+
+      issue_date: dateString
+
     })
   }
 
@@ -89,19 +133,19 @@ class Step1 extends React.PureComponent {
     // console.log(this.props, "line 34")
     const { getFieldDecorator, validateFields } = form;
     const onValidateForm = () => {
-      console.log(this.state,"data");
-      let certificateData={
-        event_name:this.state.event_name,
-      domain:this.state.domain,
-      description:this.state.description,
-      issue_date:this.state.issue_date,
-      achievement_title:this.state.achievement_title,
-      } 
+      console.log(this.state, "data");
+      let certificateData = {
+        event_name: this.state.event_name,
+        domain: this.state.domain,
+        description: this.state.description,
+        issue_date: this.state.issue_date,
+        achievement_title: this.state.achievement_title,
+      }
       dispatch({
-              type: 'form/saveStepFormData',
-              payload: certificateData,
-            });
-            router.push('/certificates/issueCertificate/form/step-form/result');
+        type: 'form/saveStepFormData',
+        payload: certificateData,
+      });
+      router.push('/certificates/issueCertificate/form/step-form/result');
       // validateFields((err, values) => {
       //   if (!err) {
       //     dispatch({
@@ -112,6 +156,7 @@ class Step1 extends React.PureComponent {
       //   }
       // });
     };
+    console.log(this.state.participantsData);
     return (
       <Fragment>
         <Form layout="horizontal" className={styles.stepForm} hideRequiredMark>
@@ -123,7 +168,7 @@ class Step1 extends React.PureComponent {
               // defaultValue={['a10', 'c12']}
               onChange={this.handleChange.bind(this)}
             >
-              {children}
+              {this.state.participantsSelectionData}
             </Select>
             {/* {getFieldDecorator('payAccount', {
               initialValue: data.payAccount,
@@ -164,7 +209,7 @@ class Step1 extends React.PureComponent {
           </Form.Item>
 
           <Form.Item {...formItemLayout} label="issue date">
-          <DatePicker onChange={this.onDateChange.bind(this)} />
+            <DatePicker onChange={this.onDateChange.bind(this)} />
           </Form.Item>
           {/* <Form.Item {...formItemLayout} label="收款账户">
             <Input.Group compact>
