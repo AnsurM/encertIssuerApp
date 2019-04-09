@@ -3,6 +3,7 @@ import { Card, Icon, Avatar, Col, Row, List, Modal, Button } from 'antd';
 import UserInfo from '../User/UserInfo';
 import {getFireBaseData} from '../../services/api';
 import firebase, { app } from 'firebase';
+const axios = require('axios');
 
 
 const { Meta } = Card;
@@ -32,12 +33,27 @@ const data = [
 class CertificateCardList extends Component {
 
 state={
-  myData:{}
+  myData:{},
+  certificateData:{}
 }
 
   componentDidMount(){
     const myUid = UserInfo.getUID();
     let that = this;
+
+    axios.get("http://192.168.0.107:7001/issuer/certificate")
+      .then((response) => {
+        // if(response.data[0].address) {
+        console.log("data  from server", response.data.data.result);
+        this.setState({
+          certificateData: response.data.data.result
+        })
+
+        console.log(this.state.certificateData)
+
+      })
+      .catch(error => {
+      });
 
     getFireBaseData("/certificatesList")
     .then(response => {
@@ -85,16 +101,16 @@ state={
         showModal = (event) => {
           this.setState({
             clickedCertificate:{
-              ID:event.certificate_list_id,
-              achievementTitle:event.certificate_acievement_title,
-              domain:event.certificate_domain,
-              blockstackID:event.certificate_blockstack_Id,
-              issuerName:event.certificate_issuer_name,
-              description:event.certificate_description,
-              issueDate:event.certificate_issue_date,
+              ID:event.id, 
+              achievementTitle:event.achievement_title,
+              domain:event.domain,
+              blockstackID:event.blockstack_id,
+              issuerName:event.issuer_name,
+              description:event.description,
+              issueDate:event.issue_date,
               expirationDate:event.certificate_expiration_date,
               signature:event.certificate_expiration_date,
-              receiverName:event.certificate_receiver_name
+              receiverName:event.receiver_name
             }
           })
           console.log(event,"event");
@@ -155,7 +171,7 @@ state={
                         grid={{
                         gutter: 40, xs: 1, sm: 2, md: 3, lg: 4
                         }}
-                        dataSource={this.state.myData}
+                        dataSource={this.state.certificateData}
                         renderItem={item => (
                           <List.Item>
                           
@@ -163,13 +179,13 @@ state={
                             <Card
                                 onClick={()=>this.showModal(item)}                        
                                 style={{ width: "100%" }}
-                                cover={<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />}
+                                cover={<img alt="example" src={item.cover_image } />}
                                 // actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
                             >
                                 <Meta
                                 avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                title={item.certificate_acievement_title}
-                                description={item.certificate_description}
+                                title={item.achievement_title}
+                                description={item.description}
                                 />
                             </Card>                
                         </List.Item>
@@ -195,7 +211,7 @@ state={
                     <p>{`Cover Image: ${this.state.clickedCertificate.coverImage}`}</p>
                     <p>{`Receiver Name: ${this.state.clickedCertificate.receiverName}`}</p>
                     <p>{`Blockstack ID: ${this.state.clickedCertificate.blockstackID}`}</p>
-                    <p>{`Issuer Name: ${this.state.clickedCertificate.coverImage}`}</p>
+                    <p>{`Issuer Name: ${this.state.clickedCertificate.issuerName}`}</p>
                     <p>{`Description: ${this.state.clickedCertificate.description}`}</p>
                     <p>{`Issue Date: ${this.state.clickedCertificate.issueDate}`}</p>
                     <p>{`Expiration Date (if any): ${this.state.clickedCertificate.expirationDate}`}</p>

@@ -127,11 +127,11 @@ class ParticipantList extends Component {
     axios.get("http://192.168.0.107:7001/issuer/participant")
     .then((response) => {
       // if(response.data[0].address) {
-        console.log("data  from server",response.data.data.results);
+        // console.log("data  from server",response.data.data.results);
         this.setState({
           participantsData:response.data.data.results
         })
-        console.log(this.state.participantsData)
+        // console.log(this.state.participantsData)
         // this.setState({
         //   myData: response.data,
         //   data: response.data,
