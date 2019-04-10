@@ -188,13 +188,20 @@ class RevokedCertificateCardList extends Component {
       .catch(error => console.log('error ', error));
   }
   render() {
-    var myData = null;
-    if (this.state.myData.length) {
-      myData = this.state.myData;
+    // var myData = null;
+    // if (this.state.myData.length) {
+    //   myData = this.state.myData;
+    // } else {
+    //   myData = mockData;
+    // }
+    var certificateData = null;
+    if (this.state.certificateData.length) {
+      certificateData = this.state.certificateData;
     } else {
-      myData = mockData;
+      certificateData = mockData;
     }
-    const { revokedIsVisible, revokeCertificateIsVisible, loading,certificateData } = this.state;
+
+    const { revokedIsVisible, revokeCertificateIsVisible, loading } = this.state;
     return (
       <div>
         <br />
@@ -209,7 +216,7 @@ class RevokedCertificateCardList extends Component {
               grid={{
                 gutter: 40, xs: 1, sm: 2, md: 3, lg: 4
               }}
-              dataSource={myData}
+              dataSource={certificateData}
               renderItem={item => (
                 <List.Item>
                   {/* <Card title={item.title}>Card content</Card> */}
