@@ -37,11 +37,16 @@ class Step1 extends React.PureComponent {
     achievement_title: '',
     participants: '',
     participantsData: {},
-    participantsSelectionData: []
+    participantsSelectionData: [],
+    tempString:' ',
+    selectedParticipantsId:[],
+    selectedParticipantsNames:[],
+    issuer_name:'Marko',
+    selectedParticipantsObj:[]
   }
 
   componentDidMount() {
-    axios.get("http://192.168.0.107:7001/issuer/participant")
+    axios.get("http://localhost:7001/issuer/participant")
       .then((response) => {
         // if(response.data[0].address) {
         console.log("data  from server", response.data.data.results);
@@ -75,7 +80,7 @@ class Step1 extends React.PureComponent {
     console.log("here")
     let arr = []
     for (let i = 0; i < this.state.participantsData.length; i++) {
-      arr.push(<Option key={this.state.participantsData[i].blockstack_id}>{this.state.participantsData[i].name}</Option>);
+      arr.push(<Option key={this.state.participantsData[i].blockstack_id+","+this.state.participantsData[i].name}>{this.state.participantsData[i].name}</Option>);
     }
     this.setState({
       participantsSelectionData: arr
@@ -85,6 +90,11 @@ class Step1 extends React.PureComponent {
 
   handleChange(value) {
     console.log(`selected ${value}`);
+    console.log(typeof(`${value}`));
+    this.setState({
+      tempString:`${value}`
+    })
+
   }
 
   achievementHandleChange(event) {
@@ -133,14 +143,56 @@ class Step1 extends React.PureComponent {
     // console.log(this.props, "line 34")
     const { getFieldDecorator, validateFields } = form;
     const onValidateForm = () => {
+
       console.log(this.state, "data");
-      let certificateData = {
+      
+      let temp=this.state.tempString.split(",");
+      console.log(temp)
+      let tempId=[];
+      let tempName=[];
+
+      for(let i=0;i<temp.length;i++){
+        if((i%2)==0){
+          tempId.push(temp[i])
+        }
+        else{
+          tempName.push(temp[i])
+        }
+      }
+
+      let allCertArr=[];
+      let certData={}
+      for(let i=0;i<tempId.length;i++){
+        certData={
+          selectedParticipantsId:tempId[i],
+        selectedParticipantsNames:tempName[i],
         event_name: this.state.event_name,
         domain: this.state.domain,
         description: this.state.description,
         issue_date: this.state.issue_date,
         achievement_title: this.state.achievement_title,
+        issuer_name:this.state.issuer_name
+        }
+        allCertArr.push(certData)
       }
+      console.log(allCertArr);
+      this.setState({
+        selectedParticipantsObj:allCertArr
+      })
+      
+
+      let certificateData = {
+        selectedParticipantsId:tempId,
+        selectedParticipantsNames:tempName,
+        event_name: this.state.event_name,
+        domain: this.state.domain,
+        description: this.state.description,
+        issue_date: this.state.issue_date,
+        achievement_title: this.state.achievement_title,
+        issuerName:this.state.issuer_name
+      }
+      console.log(certificateData,"cert data")
+      console.log(this.state.selectedParticipantsObj,"all participants");
       dispatch({
         type: 'form/saveStepFormData',
         payload: certificateData,

@@ -124,7 +124,7 @@ class ParticipantList extends Component {
   }
 
   componentDidMount() {
-    axios.get("http://192.168.0.107:7001/issuer/participant")
+    axios.get("http://localhost:7001/issuer/participant")
     .then((response) => {
       // if(response.data[0].address) {
         // console.log("data  from server",response.data.data.results);
