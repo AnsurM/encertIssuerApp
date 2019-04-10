@@ -41,7 +41,7 @@ state={
     const myUid = UserInfo.getUID();
     let that = this;
 
-    axios.get("http://192.168.0.107:7001/issuer/certificate")
+    axios.get("http://localhost:7001/issuer/certificate")
       .then((response) => {
         // if(response.data[0].address) {
         console.log("data  from server", response.data.data.result);

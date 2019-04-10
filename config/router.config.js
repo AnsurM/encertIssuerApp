@@ -25,13 +25,13 @@ export default [
     Routes: ['src/pages/Authorized'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/dashboard'},
+      { path: '/', redirect: '/dashboard' },
       {
         path: '/dashboard',
         name: 'dashboard',
         icon: 'dashboard',
         routes: [
-          {path: '/dashboard', redirect: '/dashboard/analysis'},
+          { path: '/dashboard', redirect: '/dashboard/analysis' },
           {
             path: '/dashboard/analysis',
             name: 'analysis',
@@ -61,8 +61,8 @@ export default [
         path: '/certificates',
         name: 'Certificates',
         icon: 'table',
-        routes: [    
-          {path: '/certificates', redirect: '/certificates/certificateslist'},
+        routes: [
+          { path: '/certificates', redirect: '/certificates/certificateslist' },
           {
             path: '/certificates/certificateslist',
             name: 'List of Certificates',
