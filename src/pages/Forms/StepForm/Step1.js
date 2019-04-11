@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Select, Divider, DatePicker } from 'antd';
+import { Form, Input, Button, Select, Divider, DatePicker, Menu, Dropdown, Icon, message } from 'antd';
 import router from 'umi/router';
 import styles from './style.less';
-import {createMerkleTree } from '../../../interface/functions';
+import { createMerkleTree } from '../../../interface/functions';
 import web3 from '../../../interface/web3';
 import certificateManager from '../../../interface/certificateManagerController';
 const axios = require('axios');
@@ -29,12 +29,25 @@ const formItemLayout = {
   data: form.step,
 }))
 @Form.create()
+
+// const onClickMenu = ({ key }) => {
+//   message.info(`Click on item ${key}`);
+// };
+
+// const menu = (
+//   <Menu onClick={onClickMenu}>
+//     <Menu.Item key="1">1st menu item</Menu.Item>
+//     <Menu.Item key="2">2nd memu item</Menu.Item>
+//     <Menu.Item key="3">3rd menu item</Menu.Item>
+//   </Menu>
+// );
+
 class Step1 extends React.PureComponent {
 
 
   state = {
     event_name: " asdasd",
-    transactionHash : '',
+    transactionHash: '',
     isTransactionConfirmed: false,
     domain: '',
     description: '',
@@ -43,11 +56,11 @@ class Step1 extends React.PureComponent {
     participants: '',
     participantsData: {},
     participantsSelectionData: [],
-    tempString:' ',
-    selectedParticipantsId:[],
-    selectedParticipantsNames:[],
-    issuer_name:'Marko',
-    selectedParticipantsObj:[]
+    tempString: ' ',
+    selectedParticipantsId: [],
+    selectedParticipantsNames: [],
+    issuer_name: 'Marko',
+    selectedParticipantsObj: []
   }
 
   componentDidMount() {
@@ -81,11 +94,15 @@ class Step1 extends React.PureComponent {
 
   }
 
-  insertDataInBlockchain = async(certificates) => {
-   let certificatesHash = await createMerkleTree(certificates);
-   let status = await this.insertHashIntoContract(certificatesHash);
-   console.log(status)
+  insertDataInBlockchain = async (certificates) => {
+    let certificatesHash = await createMerkleTree(certificates);
+    let status = await this.insertHashIntoContract(certificatesHash);
+    console.log(status)
   };
+
+
+
+
 
   insertHashIntoContract = async (certificatesHash) => {
     try {
@@ -98,9 +115,9 @@ class Step1 extends React.PureComponent {
         .batchIssueCertificate(encodedWith0xcertHashes).send({
           from: accounts[0],
         }).on('transactionHash', (hash) => {
-          this.setState({transactionHash: 'https://rinkeby.etherscan.io/tx/' + hash})
-        }).on('confirmation', function() {
-          this.setState({isTransactionConfirmed:  true});
+          this.setState({ transactionHash: 'https://rinkeby.etherscan.io/tx/' + hash })
+        }).on('confirmation', function () {
+          this.setState({ isTransactionConfirmed: true });
           return true;
         });
 
@@ -113,7 +130,7 @@ class Step1 extends React.PureComponent {
     console.log("here")
     let arr = []
     for (let i = 0; i < this.state.participantsData.length; i++) {
-      arr.push(<Option key={this.state.participantsData[i].blockstack_id+","+this.state.participantsData[i].name}>{this.state.participantsData[i].name}</Option>);
+      arr.push(<Option key={this.state.participantsData[i].blockstack_id + "," + this.state.participantsData[i].name}>{this.state.participantsData[i].name}</Option>);
     }
     this.setState({
       participantsSelectionData: arr
@@ -123,12 +140,27 @@ class Step1 extends React.PureComponent {
 
   handleChange(value) {
     console.log(`selected ${value}`);
-    console.log(typeof(`${value}`));
+    console.log(typeof (`${value}`));
     this.setState({
-      tempString:`${value}`
+      tempString: `${value}`
     })
 
   }
+
+
+  onClickMenu({ key }){
+    message.info(`Click on item ${key}`);
+  }
+
+  generateMenu(){
+    <Menu >
+      <Menu.Item key="1">1st menu item</Menu.Item>
+      <Menu.Item key="2">2nd memu item</Menu.Item>
+      <Menu.Item key="3">3rd menu item</Menu.Item>
+    </Menu>
+  }
+
+
 
   achievementHandleChange(event) {
     console.log(event.target.value, "title")
@@ -171,31 +203,31 @@ class Step1 extends React.PureComponent {
     })
   }
 
-   render() {
+  render() {
     const { form, dispatch, data } = this.props;
     // console.log(this.props, "line 34")
     const { getFieldDecorator, validateFields } = form;
     const onValidateForm = async () => {
 
       // console.log(this.state, "data");
-      
-      let temp=this.state.tempString.split(",");
-      // console.log(temp)
-      let tempId=[];
-      let tempName=[];
 
-      for(let i=0;i<temp.length;i++){
-        if((i%2)==0){
+      let temp = this.state.tempString.split(",");
+      // console.log(temp)
+      let tempId = [];
+      let tempName = [];
+
+      for (let i = 0; i < temp.length; i++) {
+        if ((i % 2) == 0) {
           tempId.push(temp[i])
         }
-        else{
+        else {
           tempName.push(temp[i])
         }
       }
 
-      let allCertArr=[];
-      let certData=[]
-      for(let i=0;i<tempId.length;i++){
+      let allCertArr = [];
+      let certData = []
+      for (let i = 0; i < tempId.length; i++) {
         // certData={
         //   selectedParticipantsId:tempId[i],
         // selectedParticipantsNames:tempName[i],
@@ -206,36 +238,36 @@ class Step1 extends React.PureComponent {
         // achievement_title: this.state.achievement_title,
         // issuer_name:this.state.issuer_name
         // }
-        certData=[
+        certData = [
           tempId[i],
-        tempName[i],
-        this.state.event_name,
-        this.state.domain,
-        this.state.description,
-        this.state.issue_date,
-        this.state.achievement_title,
-        this.state.issuer_name
+          tempName[i],
+          this.state.event_name,
+          this.state.domain,
+          this.state.description,
+          this.state.issue_date,
+          this.state.achievement_title,
+          this.state.issuer_name
         ]
         allCertArr.push(certData)
       }
       console.log(allCertArr);
       this.setState({
-        selectedParticipantsObj:allCertArr
+        selectedParticipantsObj: allCertArr
       })
 
 
       let certificateData = {
-        selectedParticipantsId:tempId,
-        selectedParticipantsNames:tempName,
+        selectedParticipantsId: tempId,
+        selectedParticipantsNames: tempName,
         event_name: this.state.event_name,
         domain: this.state.domain,
         description: this.state.description,
         issue_date: this.state.issue_date,
         achievement_title: this.state.achievement_title,
-        issuerName:this.state.issuer_name
+        issuerName: this.state.issuer_name
       }
-      console.log(certificateData,"cert data")
-      console.log(this.state.selectedParticipantsObj,"all participants");
+      console.log(certificateData, "cert data")
+      console.log(this.state.selectedParticipantsObj, "all participants");
       await this.insertDataInBlockchain(allCertArr);
       dispatch({
         type: 'form/saveStepFormData',
@@ -307,7 +339,21 @@ class Step1 extends React.PureComponent {
           <Form.Item {...formItemLayout} label="issue date">
             <DatePicker onChange={this.onDateChange.bind(this)} />
           </Form.Item>
-          {/* <Form.Item {...formItemLayout} label="收款账户">
+          
+          <Form.Item {...formItemLayout} label="issue date">
+            <Dropdown overlay={
+                  <Menu >
+                  <Menu.Item key="1">1st menu item</Menu.Item>
+                  <Menu.Item key="2">2nd memu item</Menu.Item>
+                  <Menu.Item key="3">3rd menu item</Menu.Item>
+                </Menu>            
+            }>
+              <a className="ant-dropdown-link" href="#">
+                Hover me, Click menu item <Icon type="down" />
+              </a>
+              </Dropdown>
+          </Form.Item>
+            {/* <Form.Item {...formItemLayout} label="收款账户">
             <Input.Group compact>
               <Select defaultValue="alipay" style={{ width: 100 }}>
                 <Option value="alipay">支付宝</Option>
@@ -322,13 +368,13 @@ class Step1 extends React.PureComponent {
               })(<Input style={{ width: 'calc(100% - 100px)' }} placeholder="test@example.com" />)}
             </Input.Group>
           </Form.Item> */}
-          {/* <Form.Item {...formItemLayout} label="收款人姓名">
+            {/* <Form.Item {...formItemLayout} label="收款人姓名">
             {getFieldDecorator('receiverName', {
               initialValue: data.receiverName,
               rules: [{ required: true, message: '请输入收款人姓名' }],
             })(<Input placeholder="请输入收款人姓名" />)}
           </Form.Item> */}
-          {/* <Form.Item {...formItemLayout} label="转账金额">
+            {/* <Form.Item {...formItemLayout} label="转账金额">
             {getFieldDecorator('amount', {
               initialValue: data.amount,
               rules: [
@@ -340,22 +386,22 @@ class Step1 extends React.PureComponent {
               ],
             })(<Input prefix="￥" placeholder="请输入金额" />)}
           </Form.Item> */}
-          <Form.Item
-            wrapperCol={{
-              xs: { span: 24, offset: 0 },
-              sm: {
-                span: formItemLayout.wrapperCol.span,
-                offset: formItemLayout.labelCol.span,
-              },
-            }}
-            label=""
-          >
-            <Button type="primary" onClick={onValidateForm}>
-              Proceed
+            <Form.Item
+              wrapperCol={{
+                xs: { span: 24, offset: 0 },
+                sm: {
+                  span: formItemLayout.wrapperCol.span,
+                  offset: formItemLayout.labelCol.span,
+                },
+              }}
+              label=""
+            >
+              <Button type="primary" onClick={onValidateForm}>
+                Proceed
             </Button>
-          </Form.Item>
+            </Form.Item>
         </Form>
-        {/* <Divider style={{ margin: '40px 0 24px' }} />
+          {/* <Divider style={{ margin: '40px 0 24px' }} />
         <div className={styles.desc}>
           <h3>说明</h3>
           <h4>转账到支付宝账户</h4>
@@ -368,8 +414,8 @@ class Step1 extends React.PureComponent {
           </p>
         </div> */}
       </Fragment>
-    );
-  }
-}
-
-export default Step1;
+        );
+      }
+    }
+    
+    export default Step1;
