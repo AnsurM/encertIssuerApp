@@ -83,12 +83,13 @@ class Step1 extends React.PureComponent {
 
   insertDataInBlockchain = async(certificates) => {
    let certificatesHash = await createMerkleTree(certificates);
-   let status = await this.insertHashIntoContract(certificatesHash);
-   console.log(status)
+   await this.insertHashIntoContract(certificatesHash);
+   console.log(this.state)
   };
 
   insertHashIntoContract = async (certificatesHash) => {
     try {
+      let that = this;
       let encodedWith0xcertHashes = [];
       for (let i = 0; i < certificatesHash.length; i++) {
         encodedWith0xcertHashes.push('0x' + certificatesHash[i]);
@@ -99,8 +100,11 @@ class Step1 extends React.PureComponent {
           from: accounts[0],
         }).on('transactionHash', (hash) => {
           this.setState({transactionHash: 'https://rinkeby.etherscan.io/tx/' + hash})
-        }).on('confirmation', function() {
-          this.setState({isTransactionConfirmed:  true});
+        }).on('confirmation', async function() {
+          console.log("confirmed")
+          await axios.post('http://localhost:7001/issuer/participant', )
+          this.setState({isTransactionConfirmed: true});
+          console.log(that.state)
           return true;
         });
 
@@ -178,7 +182,7 @@ class Step1 extends React.PureComponent {
     const onValidateForm = async () => {
 
       // console.log(this.state, "data");
-      
+
       let temp=this.state.tempString.split(",");
       // console.log(temp)
       let tempId=[];
