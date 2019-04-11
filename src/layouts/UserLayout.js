@@ -42,14 +42,14 @@ const UserLayout = ({ children }) => (
         <div className={styles.header}>
           {/*<Link to="/">*/}
             <img alt="logo" className={styles.logo} src={logo} />
-            <span className={styles.title}>Crypto-Fiat Converter</span>
+            <span className={styles.title}>Encert</span>
           {/*</Link>*/}
         </div>
-        <div className={styles.desc}>Convert Cryptocurrency to Fiat.</div>
+        <div className={styles.desc}>If it's here it's real.</div>
       </div>
       {children}
     </div>
-    <GlobalFooter links={links} copyright={copyright} />
+    {/* <GlobalFooter links={links} copyright={copyright} /> */}
   </div>
 );
 

@@ -144,10 +144,10 @@ class Step1 extends React.PureComponent {
     const { getFieldDecorator, validateFields } = form;
     const onValidateForm = () => {
 
-      console.log(this.state, "data");
+      // console.log(this.state, "data");
       
       let temp=this.state.tempString.split(",");
-      console.log(temp)
+      // console.log(temp)
       let tempId=[];
       let tempName=[];
 
@@ -161,18 +161,28 @@ class Step1 extends React.PureComponent {
       }
 
       let allCertArr=[];
-      let certData={}
+      let certData=[]
       for(let i=0;i<tempId.length;i++){
-        certData={
-          selectedParticipantsId:tempId[i],
-        selectedParticipantsNames:tempName[i],
-        event_name: this.state.event_name,
-        domain: this.state.domain,
-        description: this.state.description,
-        issue_date: this.state.issue_date,
-        achievement_title: this.state.achievement_title,
-        issuer_name:this.state.issuer_name
-        }
+        // certData={
+        //   selectedParticipantsId:tempId[i],
+        // selectedParticipantsNames:tempName[i],
+        // event_name: this.state.event_name,
+        // domain: this.state.domain,
+        // description: this.state.description,
+        // issue_date: this.state.issue_date,
+        // achievement_title: this.state.achievement_title,
+        // issuer_name:this.state.issuer_name
+        // }
+        certData=[
+          tempId[i],
+        tempName[i],
+        this.state.event_name,
+        this.state.domain,
+        this.state.description,
+        this.state.issue_date,
+        this.state.achievement_title,
+        this.state.issuer_name
+        ]
         allCertArr.push(certData)
       }
       console.log(allCertArr);
