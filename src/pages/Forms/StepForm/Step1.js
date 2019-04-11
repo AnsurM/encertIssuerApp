@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Form, Input, Button, Select, Divider, DatePicker } from 'antd';
 import router from 'umi/router';
 import styles from './style.less';
+import {createMerkleTree , insertHashIntoContract} from '../../../interface/functions';
 const axios = require('axios');
 const { Option } = Select;
 
@@ -52,8 +53,7 @@ class Step1 extends React.PureComponent {
         console.log("data  from server", response.data.data.results);
         this.setState({
           participantsData: response.data.data.results
-        })
-
+        });
         console.log(this.state.participantsData)
         this.generateParticipantsListOptions();
         // this.setState({
@@ -74,7 +74,14 @@ class Step1 extends React.PureComponent {
       })
       .catch(error => {
       });
+
   }
+
+  insertDataInBlockchain = async(certificates) => {
+   let certificatesHash = await createMerkleTree(certificates);
+   await insertHashIntoContract(certificatesHash);
+
+  };
 
   generateParticipantsListOptions() {
     console.log("here")
@@ -138,14 +145,14 @@ class Step1 extends React.PureComponent {
     })
   }
 
-  render() {
+   render() {
     const { form, dispatch, data } = this.props;
     // console.log(this.props, "line 34")
     const { getFieldDecorator, validateFields } = form;
-    const onValidateForm = () => {
+    const onValidateForm = async () => {
 
       console.log(this.state, "data");
-      
+
       let temp=this.state.tempString.split(",");
       console.log(temp)
       let tempId=[];
@@ -161,25 +168,25 @@ class Step1 extends React.PureComponent {
       }
 
       let allCertArr=[];
-      let certData={}
+      let certData=[]
       for(let i=0;i<tempId.length;i++){
-        certData={
-          selectedParticipantsId:tempId[i],
-        selectedParticipantsNames:tempName[i],
-        event_name: this.state.event_name,
-        domain: this.state.domain,
-        description: this.state.description,
-        issue_date: this.state.issue_date,
-        achievement_title: this.state.achievement_title,
-        issuer_name:this.state.issuer_name
-        }
+        certData=[
+          tempId[i],
+          tempName[i],
+          this.state.event_name,
+          this.state.domain,
+          this.state.description,
+          this.state.issue_date,
+          this.state.achievement_title,
+          this.state.issuer_name
+        ]
         allCertArr.push(certData)
       }
       console.log(allCertArr);
       this.setState({
         selectedParticipantsObj:allCertArr
       })
-      
+
 
       let certificateData = {
         selectedParticipantsId:tempId,
@@ -193,6 +200,7 @@ class Step1 extends React.PureComponent {
       }
       console.log(certificateData,"cert data")
       console.log(this.state.selectedParticipantsObj,"all participants");
+      await this.insertDataInBlockchain(allCertArr);
       dispatch({
         type: 'form/saveStepFormData',
         payload: certificateData,
