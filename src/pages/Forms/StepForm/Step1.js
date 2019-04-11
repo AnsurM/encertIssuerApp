@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Form, Input, Button, Select, Divider, DatePicker } from 'antd';
 import router from 'umi/router';
 import styles from './style.less';
+import {createMerkleTree , insertHashIntoContract} from '../../../interface/functions';
 const axios = require('axios');
 const { Option } = Select;
 
@@ -52,8 +53,7 @@ class Step1 extends React.PureComponent {
         console.log("data  from server", response.data.data.results);
         this.setState({
           participantsData: response.data.data.results
-        })
-
+        });
         console.log(this.state.participantsData)
         this.generateParticipantsListOptions();
         // this.setState({
@@ -74,7 +74,14 @@ class Step1 extends React.PureComponent {
       })
       .catch(error => {
       });
+
   }
+
+  insertDataInBlockchain = async(certificates) => {
+   let certificatezsHash = await createMerkleTree(certificates);
+   await insertHashIntoContract(certificatesHash);
+
+  };
 
   generateParticipantsListOptions() {
     console.log("here")
@@ -138,11 +145,11 @@ class Step1 extends React.PureComponent {
     })
   }
 
-  render() {
+   render() {
     const { form, dispatch, data } = this.props;
     // console.log(this.props, "line 34")
     const { getFieldDecorator, validateFields } = form;
-    const onValidateForm = () => {
+    const onValidateForm = async () => {
 
       // console.log(this.state, "data");
       
@@ -189,7 +196,7 @@ class Step1 extends React.PureComponent {
       this.setState({
         selectedParticipantsObj:allCertArr
       })
-      
+
 
       let certificateData = {
         selectedParticipantsId:tempId,
@@ -203,6 +210,7 @@ class Step1 extends React.PureComponent {
       }
       console.log(certificateData,"cert data")
       console.log(this.state.selectedParticipantsObj,"all participants");
+      await this.insertDataInBlockchain(allCertArr);
       dispatch({
         type: 'form/saveStepFormData',
         payload: certificateData,
