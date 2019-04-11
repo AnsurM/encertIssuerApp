@@ -27,33 +27,12 @@ export const verifyDataFromContract = async (certificates) => {
     let certsFromServer = rawData.data.data.results;
 
 
-
   } catch (e) {
 
   }
 };
 
-export const insertHashIntoContract = async (certificatesHash) => {
-  try {
 
-    let encodedWith0xcertHashes = [];
-    for (let i = 0; i < certificatesHash.length; i++) {
-      encodedWith0xcertHashes.push('0x' + certificatesHash[i]);
-    }
-    const accounts = await web3.eth.getAccounts();
-    await certificateManager.methods
-      .batchIssueCertificate(encodedWith0xcertHashes).send({
-        from: accounts[0],
-      }).on('transactionHash', (hash) => {
-        console.log(hash);
-      }).on('confirmation', function() {
-        console.log('Transaction confirmed');
-      });
-
-  } catch (e) {
-    console.log(e);
-  }
-};
 
 
 

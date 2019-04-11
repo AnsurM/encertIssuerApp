@@ -3,7 +3,9 @@ import { connect } from 'dva';
 import { Form, Input, Button, Select, Divider, DatePicker } from 'antd';
 import router from 'umi/router';
 import styles from './style.less';
-import {createMerkleTree , insertHashIntoContract} from '../../../interface/functions';
+import {createMerkleTree } from '../../../interface/functions';
+import web3 from '../../../interface/web3';
+import certificateManager from '../../../interface/certificateManagerController';
 const axios = require('axios');
 const { Option } = Select;
 
@@ -32,6 +34,8 @@ class Step1 extends React.PureComponent {
 
   state = {
     event_name: " asdasd",
+    transactionHash : '',
+    isTransactionConfirmed: false,
     domain: '',
     description: '',
     issue_date: '',
@@ -78,9 +82,31 @@ class Step1 extends React.PureComponent {
   }
 
   insertDataInBlockchain = async(certificates) => {
-   let certificatezsHash = await createMerkleTree(certificates);
-   await insertHashIntoContract(certificatesHash);
+   let certificatesHash = await createMerkleTree(certificates);
+   let status = await this.insertHashIntoContract(certificatesHash);
+   console.log(status)
+  };
 
+  insertHashIntoContract = async (certificatesHash) => {
+    try {
+      let encodedWith0xcertHashes = [];
+      for (let i = 0; i < certificatesHash.length; i++) {
+        encodedWith0xcertHashes.push('0x' + certificatesHash[i]);
+      }
+      const accounts = await web3.eth.getAccounts();
+      await certificateManager.methods
+        .batchIssueCertificate(encodedWith0xcertHashes).send({
+          from: accounts[0],
+        }).on('transactionHash', (hash) => {
+          this.setState({transactionHash: 'https://rinkeby.etherscan.io/tx/' + hash})
+        }).on('confirmation', function() {
+          this.setState({isTransactionConfirmed:  true});
+          return true;
+        });
+
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   generateParticipantsListOptions() {
