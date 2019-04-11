@@ -21,14 +21,22 @@ export const createMerkleTree = async (certificates) => {
   }
 };
 
+// Accepts hash array and verifies the certificate
 export const verifyDataFromContract = async (certificates) => {
   try {
-    let rawData = await axios.get("http://localhost:7001/issuer/certificates");
-    let certsFromServer = rawData.data.data.results;
+    let certificateStatus = [];
+    const accounts = await web3.eth.getAccounts();
 
-
+    for (let i = 0 ; i< certificates.length ; i++){
+      let status = await certificateManager.methods.verifyCertificate(accounts[0], certificates[i]).call();
+      if(status){
+        certificateStatus.push(true);
+      } else {
+        certificateStatus.push(false)
+      }
+    }
   } catch (e) {
-
+    console.log(e)
   }
 };
 
