@@ -248,9 +248,9 @@ class Step1 extends React.PureComponent {
           event_name: this.state.event_name,
           issue_date: this.state.issue_date,
           issuer_name:this.state.issuer_name,
-          selectedParticipantsId:tempId[i],
-          selectedParticipantsNames:tempName[i],
-          selectedParticipantsTeamNames:tempTeamName[i]
+          blockstack_id:tempId[i],
+          receiver_name:tempName[i],
+          team_name:tempTeamName[i]
         // domain: this.state.domain,
         // description: this.state.description,
         }
@@ -259,13 +259,13 @@ class Step1 extends React.PureComponent {
         certData = [
           this.state.achievement_title,
           tempId[i],
+          this.state.event_name,
+          this.state.issue_date,
+          this.state.issuer_name,
           tempName[i],
           tempTeamName[i],
-          this.state.event_name,
           // this.state.domain,
           // this.state.description,
-          this.state.issue_date,
-          this.state.issuer_name
         ]
 
         certDataArr.push(certDataObj);
