@@ -136,7 +136,7 @@ class Step1 extends React.PureComponent {
     console.log("here")
     let arr = []
     for (let i = 0; i < this.state.participantsData.length; i++) {
-      arr.push(<Option key={this.state.participantsData[i].blockstack_id + "," + this.state.participantsData[i].name}>{this.state.participantsData[i].name}</Option>);
+      arr.push(<Option key={this.state.participantsData[i].blockstack_id + "," + this.state.participantsData[i].name + "," + this.state.participantsData[i].team}>{this.state.participantsData[i].name}</Option>);
     }
     this.setState({
       participantsSelectionData: arr
@@ -221,13 +221,20 @@ class Step1 extends React.PureComponent {
       // console.log(temp)
       let tempId = [];
       let tempName = [];
-
+      let tempTeamName=[];
+      let flagIndex=1;
       for (let i = 0; i < temp.length; i++) {
-        if ((i % 2) == 0) {
-          tempId.push(temp[i])
+        if (flagIndex==1) {
+          tempId.push(temp[i]);
+          flagIndex++;
         }
-        else {
+        else if(flagIndex==2) {
           tempName.push(temp[i])
+          flagIndex++;
+        }
+        else{
+          tempTeamName.push(temp[i])
+          flagIndex=1;
         }
       }
 
@@ -237,25 +244,27 @@ class Step1 extends React.PureComponent {
       let certDataObj={};
       for (let i = 0; i < tempId.length; i++) {
         certDataObj={
+          achievement_title: this.state.achievement_title,
           event_name: this.state.event_name,
           issue_date: this.state.issue_date,
           issuer_name:this.state.issuer_name,
           selectedParticipantsId:tempId[i],
           selectedParticipantsNames:tempName[i],
+          selectedParticipantsTeamNames:tempTeamName[i]
         // domain: this.state.domain,
         // description: this.state.description,
-        // achievement_title: this.state.achievement_title,
         }
 
 
         certData = [
+          this.state.achievement_title,
           tempId[i],
           tempName[i],
+          tempTeamName[i],
           this.state.event_name,
           // this.state.domain,
           // this.state.description,
           this.state.issue_date,
-          // this.state.achievement_title,
           this.state.issuer_name
         ]
 
@@ -335,9 +344,9 @@ class Step1 extends React.PureComponent {
           </Form.Item>
 
 
-          {/* <Form.Item {...formItemLayout} label="Achievement">
+          <Form.Item {...formItemLayout} label="Achievement">
             <Input placeholder="Runner Up" onChange={this.achievementHandleChange.bind(this)} />
-          </Form.Item> */}
+          </Form.Item>
 
 
           {/* <Form.Item {...formItemLayout} label="Domain">
