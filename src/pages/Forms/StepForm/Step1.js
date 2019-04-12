@@ -117,11 +117,10 @@ class Step1 extends React.PureComponent {
           console.log("confirmed")
           if(that.state.isTransactionConfirmed){
             console.log(certificatesServer)
-            // await axios.post('http://localhost:7001/issuer/certificate', certificatesServer);
+            await axios.post('http://localhost:7001/issuer/certificate', certificatesServer);
             that.setState({isTransactionConfirmed : false});
             router.push('/certificates/issueCertificate/form/step-form/result');
           }
-
           that.setState({isTransactionConfirmed: true});
           console.log(that.state)
           return true;
