@@ -48,7 +48,7 @@ class Step1 extends React.PureComponent {
   state = {
     event_name: " asdasd",
     transactionHash: '',
-    isTransactionConfirmed: false,
+    isTransactionConfirmed: true,
     // domain: '',
     // description: '',
     issue_date: '',
@@ -94,17 +94,13 @@ class Step1 extends React.PureComponent {
 
   }
 
-  insertDataInBlockchain = async(certificates) => {
-   let certificatesHash = await createMerkleTree(certificates);
-   await this.insertHashIntoContract(certificatesHash);
+  insertDataInBlockchain = async(certificatesBlockchain , certificatesServer) => {
+   let certificatesHash = await createMerkleTree(certificatesBlockchain);
+   await this.insertHashIntoContract(certificatesHash , certificatesServer);
    console.log(this.state)
   };
 
-
-
-
-
-  insertHashIntoContract = async (certificatesHash) => {
+  insertHashIntoContract = async (certificatesHash , certificatesServer) => {
     try {
       let that = this;
       let encodedWith0xcertHashes = [];
@@ -116,11 +112,17 @@ class Step1 extends React.PureComponent {
         .batchIssueCertificate(encodedWith0xcertHashes).send({
           from: accounts[0],
         }).on('transactionHash', (hash) => {
-          this.setState({transactionHash: 'https://rinkeby.etherscan.io/tx/' + hash})
+          that.setState({transactionHash: 'https://rinkeby.etherscan.io/tx/' + hash})
         }).on('confirmation', async function() {
           console.log("confirmed")
-          // await axios.post('http://localhost:7001/issuer/participant', )
-          this.setState({isTransactionConfirmed: true});
+          if(that.state.isTransactionConfirmed){
+            console.log(certificatesServer)
+            // await axios.post('http://localhost:7001/issuer/certificate', certificatesServer);
+            that.setState({isTransactionConfirmed : false});
+            router.push('/certificates/issueCertificate/form/step-form/result');
+          }
+
+          that.setState({isTransactionConfirmed: true});
           console.log(that.state)
           return true;
         });
@@ -256,7 +258,7 @@ class Step1 extends React.PureComponent {
           // this.state.achievement_title,
           this.state.issuer_name
         ]
-        
+
         certDataArr.push(certDataObj);
         allCertArr.push(certData);
       }
@@ -280,12 +282,11 @@ class Step1 extends React.PureComponent {
       }
       // console.log(certificateData, "cert data")
       console.log(this.state.selectedParticipantsObj, "all participants");
-      await this.insertDataInBlockchain(allCertArr);
+      await this.insertDataInBlockchain(allCertArr , certDataArr);
       dispatch({
         type: 'form/saveStepFormData',
         payload: certificateData,
       });
-      router.push('/certificates/issueCertificate/form/step-form/result');
       // validateFields((err, values) => {
       //   if (!err) {
       //     dispatch({
@@ -351,14 +352,14 @@ class Step1 extends React.PureComponent {
           <Form.Item {...formItemLayout} label="issue date">
             <DatePicker onChange={this.onDateChange.bind(this)} />
           </Form.Item>
-          
+
           {/* <Form.Item {...formItemLayout} label="issue date">
             <Dropdown overlay={
                   <Menu >
                   <Menu.Item key="1">1st menu item</Menu.Item>
                   <Menu.Item key="2">2nd memu item</Menu.Item>
                   <Menu.Item key="3">3rd menu item</Menu.Item>
-                </Menu>            
+                </Menu>
             }>
               <a className="ant-dropdown-link" href="#">
                 Hover me, Click menu item <Icon type="down" />
@@ -429,5 +430,5 @@ class Step1 extends React.PureComponent {
         );
       }
     }
-    
+
     export default Step1;
