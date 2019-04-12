@@ -45,8 +45,9 @@ state={
     axios.get("http://localhost:7001/issuer/certificate")
       .then(async (response) => {
         // if(response.data[0].address) {
-        let certificates = response.data.data.result;
+
         console.log("data  from server", response.data.data.result);
+        let certificates = response.data.data.result;
         let verifiedCertificates = await initiateCertificatesVerification(certificates);
         this.setState({
           certificateData: verifiedCertificates
