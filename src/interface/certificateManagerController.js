@@ -268,6 +268,6 @@ let abi =[
     "type": "event"
   }
 ];
-const contractAddress = '0x4b9b22eb799aee6106afc9c5dab485eafbfee7b9';
+  const contractAddress = '0x4b9b22eb799aee6106afc9c5dab485eafbfee7b9';
 
 export default new web3.eth.Contract(abi, contractAddress);
