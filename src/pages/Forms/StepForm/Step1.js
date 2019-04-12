@@ -235,14 +235,14 @@ class Step1 extends React.PureComponent {
       let certDataObj={};
       for (let i = 0; i < tempId.length; i++) {
         certDataObj={
-        selectedParticipantsId:tempId[i],
-        selectedParticipantsNames:tempName[i],
-        event_name: this.state.event_name,
+          event_name: this.state.event_name,
+          issue_date: this.state.issue_date,
+          issuer_name:this.state.issuer_name,
+          selectedParticipantsId:tempId[i],
+          selectedParticipantsNames:tempName[i],
         // domain: this.state.domain,
         // description: this.state.description,
-        issue_date: this.state.issue_date,
         // achievement_title: this.state.achievement_title,
-        issuer_name:this.state.issuer_name
         }
 
 
