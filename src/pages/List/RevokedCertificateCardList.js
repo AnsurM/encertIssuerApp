@@ -113,17 +113,21 @@ class RevokedCertificateCardList extends Component {
   handleRevokeOk = () => {
     this.setState({ loading: true });
     if (this.state.revokeHolder.length > 0) {
-      if (this.state.revokeReason.length > 0) {
-        this.setState({
-          revokeCertificate: {
-            holder: this.state.revokeHolder,
-            reason: this.state.revokeReason
-          }
-        });
-        setTimeout(() => {
-          this.setState({ loading: false, revokeCertificateIsVisible: false });
-        }, 2000);
-      }
+      console.log(this.state.revokeHolder,"holder id")
+      setTimeout(() => {
+            this.setState({ loading: false, revokeCertificateIsVisible: false,revokeHolder:" " });
+          }, 2000);
+      // if (this.state.revokeReason.length > 0) {
+      //   this.setState({
+      //     revokeCertificate: {
+      //       holder: this.state.revokeHolder,
+      //       reason: this.state.revokeReason
+      //     }
+      //   });
+      //   setTimeout(() => {
+      //     this.setState({ loading: false, revokeCertificateIsVisible: false });
+      //   }, 2000);
+      // }
     }
     else {
       message.error("Input fields can't be empty");
@@ -137,16 +141,19 @@ class RevokedCertificateCardList extends Component {
     this.showRevokeModal();
   }
   onRevokeInputChange = (event) => {
-    if (event.target) {
-      if (event.target.id == "revHolder") {
-        const revHolder = event.target.value;
-        this.setState({ revokeHolder: revHolder });
-      }
-      else if (event.target.id == "revReason") {
-        const revReas = event.target.value;
-        this.setState({ revokeReason: revReas });
-      }
-    }
+    const revHolder = event.target.value;
+    console.log(event.target.value);
+    this.setState({ revokeHolder: revHolder });
+    // if (event.target) {
+      // if (event.target.id == "revHolder") {
+      //   const revHolder = event.target.value;
+      //   this.setState({ revokeHolder: revHolder });
+      // }
+      // else if (event.target.id == "revReason") {
+      //   const revReas = event.target.value;
+      //   this.setState({ revokeReason: revReas });
+      // }
+    // }
   }
   componentDidMount() {
 
@@ -204,6 +211,7 @@ class RevokedCertificateCardList extends Component {
     const { revokedIsVisible, revokeCertificateIsVisible, loading } = this.state;
     return (
       <div>
+         
         <br />
         <h2>All Revoked Certificates</h2>
         <Button type="danger" size="large" onClick={this.onRevokeCert}>Revoke a Certificate</Button>
@@ -212,6 +220,7 @@ class RevokedCertificateCardList extends Component {
         <div>
           <Row>
             {/* { xs: 8, sm: 16, md: 24, lg: 32 } */}
+            
             <List
               grid={{
                 gutter: 40, xs: 1, sm: 2, md: 3, lg: 4
@@ -278,8 +287,8 @@ class RevokedCertificateCardList extends Component {
           >
             <p>Select Holder: </p>
             <Input id="revHolder" onChange={this.onRevokeInputChange} placeholder="Holder name here" />
-            <p>Reason of Revocation: </p>
-            <TextArea id="revReason" rows={4} onChange={this.onRevokeInputChange} />
+            {/* <p>Reason of Revocation: </p>
+            <TextArea id="revReason" rows={4} onChange={this.onRevokeInputChange} /> */}
           </Modal>
         </div>
       </div>
