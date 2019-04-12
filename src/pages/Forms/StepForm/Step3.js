@@ -17,22 +17,22 @@ class Step3 extends React.PureComponent {
     };
     const information = (
       <div className={styles.information}>
-        <Row>
+        {/* <Row>
           <Col xs={24} sm={8} className={styles.label}>
             Achievement Title：
           </Col>
           <Col xs={24} sm={16}>
             {data.achievement_title}
           </Col>
-        </Row>
-        <Row>
+        </Row> */}
+        {/* <Row>
           <Col xs={24} sm={8} className={styles.label}>
             Domain：
           </Col>
           <Col xs={24} sm={16}>
             {data.domain}
           </Col>
-        </Row>
+        </Row> */}
         <Row>
           <Col xs={24} sm={8} className={styles.label}>
             Event：

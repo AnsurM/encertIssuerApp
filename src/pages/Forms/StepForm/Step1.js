@@ -49,10 +49,10 @@ class Step1 extends React.PureComponent {
     event_name: " asdasd",
     transactionHash: '',
     isTransactionConfirmed: false,
-    domain: '',
-    description: '',
+    // domain: '',
+    // description: '',
     issue_date: '',
-    achievement_title: '',
+    // achievement_title: '',
     participants: '',
     participantsData: {},
     participantsSelectionData: [],
@@ -119,7 +119,7 @@ class Step1 extends React.PureComponent {
           this.setState({transactionHash: 'https://rinkeby.etherscan.io/tx/' + hash})
         }).on('confirmation', async function() {
           console.log("confirmed")
-          await axios.post('http://localhost:7001/issuer/participant', )
+          // await axios.post('http://localhost:7001/issuer/participant', )
           this.setState({isTransactionConfirmed: true});
           console.log(that.state)
           return true;
@@ -238,10 +238,10 @@ class Step1 extends React.PureComponent {
         selectedParticipantsId:tempId[i],
         selectedParticipantsNames:tempName[i],
         event_name: this.state.event_name,
-        domain: this.state.domain,
-        description: this.state.description,
+        // domain: this.state.domain,
+        // description: this.state.description,
         issue_date: this.state.issue_date,
-        achievement_title: this.state.achievement_title,
+        // achievement_title: this.state.achievement_title,
         issuer_name:this.state.issuer_name
         }
 
@@ -250,10 +250,10 @@ class Step1 extends React.PureComponent {
           tempId[i],
           tempName[i],
           this.state.event_name,
-          this.state.domain,
-          this.state.description,
+          // this.state.domain,
+          // this.state.description,
           this.state.issue_date,
-          this.state.achievement_title,
+          // this.state.achievement_title,
           this.state.issuer_name
         ]
         
@@ -272,10 +272,10 @@ class Step1 extends React.PureComponent {
         selectedParticipantsId: tempId,
         selectedParticipantsNames: tempName,
         event_name: this.state.event_name,
-        domain: this.state.domain,
-        description: this.state.description,
+        // domain: this.state.domain,
+        // description: this.state.description,
         issue_date: this.state.issue_date,
-        achievement_title: this.state.achievement_title,
+        // achievement_title: this.state.achievement_title,
         issuerName: this.state.issuer_name
       }
       // console.log(certificateData, "cert data")
@@ -334,19 +334,19 @@ class Step1 extends React.PureComponent {
           </Form.Item>
 
 
-          <Form.Item {...formItemLayout} label="Achievement">
+          {/* <Form.Item {...formItemLayout} label="Achievement">
             <Input placeholder="Runner Up" onChange={this.achievementHandleChange.bind(this)} />
-          </Form.Item>
+          </Form.Item> */}
 
 
-          <Form.Item {...formItemLayout} label="Domain">
+          {/* <Form.Item {...formItemLayout} label="Domain">
             <Input placeholder="Bloackchain" onChange={this.domainHandleChange.bind(this)} />
-          </Form.Item>
+          </Form.Item> */}
 
 
-          <Form.Item {...formItemLayout} label="Description">
+          {/* <Form.Item {...formItemLayout} label="Description">
             <Input placeholder="description" onChange={this.descriptionHandleChange.bind(this)} />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item {...formItemLayout} label="issue date">
             <DatePicker onChange={this.onDateChange.bind(this)} />
