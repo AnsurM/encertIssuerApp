@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, Icon, Avatar, Col, Row, List, Modal, Button } from 'antd';
 import UserInfo from '../User/UserInfo';
 import {getFireBaseData} from '../../services/api';
+import {initiateCertificatesVerification} from '../../interface/functions';
 import firebase, { app } from 'firebase';
 const axios = require('axios');
 
@@ -28,7 +29,7 @@ const data = [
       title: 'Title 6',
     },
   ];
-  
+
 
 class CertificateCardList extends Component {
 
@@ -42,13 +43,15 @@ state={
     let that = this;
 
     axios.get("http://localhost:7001/issuer/certificate")
-      .then((response) => {
+      .then(async (response) => {
         // if(response.data[0].address) {
-          
+
         console.log("data  from server", response.data.data.result);
+        let certificates = response.data.data.result;
+        let verifiedCertificates = await initiateCertificatesVerification(certificates);
         this.setState({
-          certificateData: response.data.data.result
-        })
+          certificateData: verifiedCertificates
+        });
 
         console.log(this.state.certificateData)
 
@@ -95,14 +98,14 @@ state={
             description: "",
             issueDate: "",
             expirationDate: "",
-            signature: ""            
+            signature: ""
           }
         };
-        
+
         showModal = (event) => {
           this.setState({
             clickedCertificate:{
-              ID:event.id, 
+              ID:event.id,
               achievementTitle:event.achievement_title,
               domain:event.domain,
               blockstackID:event.blockstack_id,
@@ -125,9 +128,9 @@ state={
         const input = value;
         this.setState({searchInput: value});
         let newData = Object.values(this.state.myData);
-    
+
         let processedData = [];
-    
+
         newData.forEach((element) =>
           {
             if((element.receiver_name.includes(input)) || (element.receiver_blockstack_id.includes(input)))
@@ -143,23 +146,23 @@ state={
           }
           else
           {
-            this.setState({searchData: processedData});        
+            this.setState({searchData: processedData});
           }
     }
 
-    
+
       handleOk = () => {
         this.setState({ loading: false, visible: false });
       }
-    
+
       handleCancel = () => {
         this.setState({ visible: false });
       }
-        
+
 
     render() {
         const { visible, loading } = this.state;
-        
+
         return (
             <div>
                 <br />
@@ -175,10 +178,10 @@ state={
                         dataSource={this.state.certificateData}
                         renderItem={item => (
                           <List.Item>
-                          
+
                             {/* <Card title={item.title}>Card content</Card>   (this.state.myData)*/ }
                             <Card
-                                onClick={()=>this.showModal(item)}                        
+                                onClick={()=>this.showModal(item)}
                                 style={{ width: "100%" }}
                                 cover={<img alt="example" src={item.cover_image } />}
                                 // actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
@@ -188,12 +191,12 @@ state={
                                 title={item.achievement_title}
                                 description={item.description}
                                 />
-                            </Card>                
+                            </Card>
                         </List.Item>
                         )}
                     />
                     </Row>
-                </div> 
+                </div>
                 <div>
                         <Modal
                     visible={visible}
@@ -219,7 +222,7 @@ state={
                     <p>{`Signature: ${this.state.clickedCertificate.signature}`}</p>
 
                     </Modal>
-                </div>            
+                </div>
       </div>
             );
     }

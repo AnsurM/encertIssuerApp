@@ -22,26 +22,103 @@ export const createMerkleTree = async (certificates) => {
   }
 };
 
-// Accepts hash array and verifies the certificate
-export const verifyDataFromContract = async (certificates) => {
+export  const isCertificateRevoked = async (certificateHash) => {
   try {
     let certificateStatus = [];
-    const accounts = await web3.eth.getAccounts();
-
-    for (let i = 0 ; i< certificates.length ; i++){
-      let status = await certificateManager.methods.verifyCertificate(accounts[0], certificates[i]).call();
+    for (let i = 0 ; i < certificateHash.length ; i++){
+      let status = await certificateManager.methods.isCertificateRevoked( '0x'+certificateHash[i]).call();
       if(status){
         certificateStatus.push(true);
       } else {
         certificateStatus.push(false)
       }
     }
+    return certificateStatus;
+
+
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+
+// Accepts hash array and verifies the certificate
+export const verifyDataFromContract = async (certificates) => {
+  try {
+    let certificateStatus = [];
+    for (let i = 0 ; i < certificates.length ; i++){
+      let status = await certificateManager.methods.verifyCertificate('0x4b9b22eb799aee6106afc9c5dab485eafbfee7b9', '0x'+certificates[i]).call();
+      if(status){
+        certificateStatus.push(true);
+      } else {
+        certificateStatus.push(false)
+      }
+    }
+    return certificateStatus;
   } catch (e) {
     console.log(e)
   }
 };
 
+export const removeUnverifiedCertificates = async (certificatesObject  , certificatesStatus) =>{
+  try {
+      let verifiedCertificates = [];
+      for (let i = 0 ; i< certificatesObject.length ; i++){
+        if(certificatesStatus[i]){
+          verifiedCertificates.push(certificatesObject[i])
+        }
+      }
+      return verifiedCertificates;
+  }catch (e) {
+    console.log(e);
+  }
+};
 
+export const initiateCertificatesVerification = async (certificatesObject) => {
+  try {
+    let certificatesArray = await convertObjectIntoArray(certificatesObject);
+    let certificatesHash = await createMerkleTree(certificatesArray);
+    let certificatesStatus = await verifyDataFromContract(certificatesHash);
+    let verifiedCertificates = await removeUnverifiedCertificates(certificatesObject , certificatesStatus);
+    return verifiedCertificates;
+
+  }catch (e) {
+    console.log(e);
+  }
+};
+
+export const initiateRevokeCertificationVerification = async (certificatesObject) => {
+  try {
+    let certificatesArray = await convertObjectIntoArray(certificatesObject);
+    let certificatesHash = await createMerkleTree(certificatesArray);
+    let certificatesStatus = await isCertificateRevoked(certificatesHash);
+    let revokedCertificates = await removeUnverifiedCertificates(certificatesObject , certificatesStatus);
+    return revokedCertificates;
+  }catch (e) {
+
+  }
+};
+
+export const convertObjectIntoArray = async (certificates) => {
+  try {
+      let certArrayForTree = [];
+      for ( let i = 0 ; i< certificates.length ; i++){
+        certArrayForTree.push([
+          certificates[i].achievement_title,
+          certificates[i].blockstack_id,
+          certificates[i].event_name,
+          certificates[i].issue_date,
+          certificates[i].issuer_name,
+          certificates[i].receiver_name,
+          certificates[i].team_name
+        ])
+      }
+      return certArrayForTree;
+
+  } catch (e) {
+    console.log(e)
+  }
+};
 export  const revokeCertificate = async (certificateHash) => {
   try {
     let certHashWith0x = '0x'+certificateHash;
@@ -70,15 +147,6 @@ export  const revokeCertificate = async (certificateHash) => {
   }
 };
 
-export  const isCertificateRevoked = async (certificateHash) => {
-  try {
-    let certHashWith0x = '0x'+certificateHash;
-    return await certificateManager.methods.isCertificateRevoked(certHashWith0x).call();
-
-  } catch (e) {
-    console.log(e);
-  }
-};
 
 
 

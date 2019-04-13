@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Card, Icon, Avatar, Col, Row, List, Modal, Button, Input } from 'antd';
 import { EventEmitter } from 'events';
+import {initiateRevokeCertificationVerification} from '../../interface/functions';
 import { message } from 'antd';
 import { getFireBaseData } from '../../services/api';
+import { initiateCertificatesVerification } from '../../interface/functions';
 const axios = require('axios');
 
 const { Meta } = Card;
@@ -158,13 +160,14 @@ class RevokedCertificateCardList extends Component {
   componentDidMount() {
 
     axios.get("http://localhost:7001/issuer/certificate")
-      .then((response) => {
+      .then(async (response) => {
         // if(response.data[0].address) {
         console.log("data  from server", response.data.data.result);
-        let tempData=response.data.data.result
+        let tempData=response.data.data.result;
+        let verifiedCertificates = await initiateRevokeCertificationVerification(tempData);
         this.setState({
-          certificateData: tempData
-        })
+          certificateData: verifiedCertificates
+        });
 
         console.log(this.state.certificateData)
 
