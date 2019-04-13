@@ -205,7 +205,7 @@ class RevokedCertificateCardList extends Component {
     if (this.state.certificateData.length) {
       certificateData = this.state.certificateData;
     } else {
-      certificateData = mockData;
+      // certificateData = mogitckData;
     }
 
     const { revokedIsVisible, revokeCertificateIsVisible, loading } = this.state;
@@ -220,8 +220,7 @@ class RevokedCertificateCardList extends Component {
         <div>
           <Row>
             {/* { xs: 8, sm: 16, md: 24, lg: 32 } */}
-            
-            <List
+            {(certificateData)?(<List
               grid={{
                 gutter: 40, xs: 1, sm: 2, md: 3, lg: 4
               }}
@@ -243,7 +242,8 @@ class RevokedCertificateCardList extends Component {
                   </Card>
                 </List.Item>
               )}
-            />
+            />):(<p>No Data</p>)}
+            
           </Row>
         </div>
         <div>
