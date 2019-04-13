@@ -234,7 +234,7 @@ class RevokedCertificateCardList extends Component {
                   <Card
                     onClick={() => this.showModal(item)}
                     style={{ width: "100%" }}
-                    cover={<img alt="example" src={item.cover_image} />}
+                    cover={<img alt="example" src={"http://placehold.it/32x32"} />}
                   // actions={[<Icon type="setting" />, <Icon type="edit" />, <Icon type="ellipsis" />]}
                   >
                     <Meta

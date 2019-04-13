@@ -25,30 +25,30 @@ export default [
     Routes: ['src/pages/Authorized'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/dashboard' },
-      {
-        path: '/dashboard',
-        name: 'dashboard',
-        icon: 'dashboard',
-        routes: [
-          { path: '/dashboard', redirect: '/dashboard/analysis' },
-          {
-            path: '/dashboard/analysis',
-            name: 'analysis',
-            component: './Dashboard/Analysis',
-          },
-          {
-            path: '/dashboard/monitor',
-            name: 'monitor',
-            component: './Dashboard/Monitor',
-          },
-          {
-            path: '/dashboard/workplace',
-            name: 'workplace',
-            component: './Dashboard/Workplace',
-          },
-        ],
-      },
+      { path: '/', redirect: '/list/participantslist' },
+      // {
+      //   path: '/dashboard',
+      //   name: 'dashboard',
+      //   icon: 'dashboard',
+      //   routes: [
+      //     { path: '/dashboard', redirect: '/dashboard/analysis' },
+      //     {
+      //       path: '/dashboard/analysis',
+      //       name: 'analysis',
+      //       component: './Dashboard/Analysis',
+      //     },
+      //     {
+      //       path: '/dashboard/monitor',
+      //       name: 'monitor',
+      //       component: './Dashboard/Monitor',
+      //     },
+      //     {
+      //       path: '/dashboard/workplace',
+      //       name: 'workplace',
+      //       component: './Dashboard/Workplace',
+      //     },
+      //   ],
+      // },
       //List of Participants
       {
         path: '/list/participantslist',
