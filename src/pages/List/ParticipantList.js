@@ -124,7 +124,7 @@ class ParticipantList extends Component {
   }
 
   componentDidMount() {
-    axios.get("http://localhost:7001/issuer/participant")
+    axios.get("https://encert-server.herokuapp.com/issuer/participant")
     .then((response) => {
       // if(response.data[0].address) {
         // console.log("data  from server",response.data.data.results);

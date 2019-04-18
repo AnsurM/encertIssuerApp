@@ -116,7 +116,7 @@ class RevokedCertificateCardList extends Component {
     this.setState({ loading: true });
     if (this.state.revokeHolder.length > 0) {
       console.log(this.state.revokeHolder,"holder id");
-      let rawData = await axios.get("http://localhost:7001/issuer/certificate/"+this.state.revokeHolder);
+      let rawData = await axios.get("https://encert-server.herokuapp.com/issuer/certificate/"+this.state.revokeHolder);
       let certificate = rawData.data.data.result;
       await initiateCertificateRevokation(certificate);
       console.log(certificate);

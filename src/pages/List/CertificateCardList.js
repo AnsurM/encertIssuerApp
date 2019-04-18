@@ -42,7 +42,7 @@ state={
     const myUid = UserInfo.getUID();
     let that = this;
 
-    axios.get("http://localhost:7001/issuer/certificate")
+    axios.get("https://encert-server.herokuapp.com/issuer/certificate")
       .then(async (response) => {
         // if(response.data[0].address) {
 
