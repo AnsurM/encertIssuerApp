@@ -3,6 +3,8 @@ import SHA256 from 'crypto-js/sha256';
 import web3 from './web3';
 import certificateManager from './certificateManagerController';
 import router from 'umi/router';
+import QRCode from 'qrcode';
+import download from 'downloadjs';
 
 
 export const createMerkleTree = async (certificates) => {
@@ -14,7 +16,6 @@ export const createMerkleTree = async (certificates) => {
       const root = tree.getRoot().toString('hex');
       treeHashes.push(root);
     }
-    console.log(treeHashes);
     return treeHashes;
 
   } catch (e) {
@@ -34,8 +35,6 @@ export  const isCertificateRevoked = async (certificateHash) => {
       }
     }
     return certificateStatus;
-
-
   } catch (e) {
     console.log(e);
   }
@@ -59,6 +58,8 @@ export const verifyDataFromContract = async (certificates) => {
     console.log(e)
   }
 };
+
+
 
 export const removeUnverifiedCertificates = async (certificatesObject  , certificatesStatus) =>{
   try {
@@ -119,8 +120,33 @@ export const convertObjectIntoArray = async (certificates) => {
     console.log(e)
   }
 };
-export  const revokeCertificate = async (certificateHash) => {
+
+export const initiateCertificateRevokation = async (certificateObject) => {
   try {
+    let certArray = await  convertObjectIntoArray(certificateObject);
+    let certHash  = await createMerkleTree(certArray);
+    console.log(certHash);
+    let revokeCertificate = await revokeCertificate(certHash);
+    console.log(revokeCertificate)
+  }catch (e) {
+
+  }
+};
+
+export const generateQrCodes = async (certificates) => {
+  try {
+    for( let i = 0 ; i < certificates.length ; i++) {
+      let qr = await QRCode.toDataURL("https://encert-server.herokuapp.com/issuer/certificate/"+certificates[i]._id);
+      await download(qr ,`${certificates[i].receiver_name} , team ${certificates[i].team_name}.png`);
+    }
+  } catch (e) {
+    console.log(e)
+  }
+};
+
+export const revokeCertificate = async (certificateHash) => {
+  try {
+    console.log(certificateHash);
     let certHashWith0x = '0x'+certificateHash;
     const accounts = await web3.eth.getAccounts();
     await certificateManager.methods

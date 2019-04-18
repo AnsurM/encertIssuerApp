@@ -3,11 +3,13 @@ import { connect } from 'dva';
 import { Form, Input, Button, Select, Divider, DatePicker, Menu, Dropdown, Icon, message } from 'antd';
 import router from 'umi/router';
 import styles from './style.less';
-import { createMerkleTree } from '../../../interface/functions';
+import { createMerkleTree , generateQrCodes} from '../../../interface/functions';
 import web3 from '../../../interface/web3';
 import certificateManager from '../../../interface/certificateManagerController';
 const axios = require('axios');
 const { Option } = Select;
+
+
 
 const children = [];
 for (let i = 10; i < 36; i++) {
@@ -116,8 +118,8 @@ class Step1 extends React.PureComponent {
         }).on('confirmation', async function() {
           console.log("confirmed")
           if(that.state.isTransactionConfirmed){
-            console.log(certificatesServer)
-            await axios.post('http://localhost:7001/issuer/certificate', certificatesServer);
+            let certificates =  await axios.post('http://localhost:7001/issuer/certificate', certificatesServer);
+            await generateQrCodes(certificates.data.data.results);
             that.setState({isTransactionConfirmed : false});
             router.push('/certificates/issueCertificate/form/step-form/result');
           }
@@ -151,21 +153,6 @@ class Step1 extends React.PureComponent {
     })
 
   }
-
-
-  onClickMenu({ key }){
-    message.info(`Click on item ${key}`);
-  }
-
-  generateMenu(){
-    <Menu >
-      <Menu.Item key="1">1st menu item</Menu.Item>
-      <Menu.Item key="2">2nd memu item</Menu.Item>
-      <Menu.Item key="3">3rd menu item</Menu.Item>
-    </Menu>
-  }
-
-
 
   achievementHandleChange(event) {
     console.log(event.target.value, "title")
