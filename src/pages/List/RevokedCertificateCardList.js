@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Icon, Avatar, Col, Row, List, Modal, Button, Input } from 'antd';
 import { EventEmitter } from 'events';
-import {initiateRevokeCertificationVerification} from '../../interface/functions';
+import {initiateRevokeCertificationVerification , initiateCertificateRevokation} from '../../interface/functions';
 import { message } from 'antd';
 import { getFireBaseData } from '../../services/api';
 import { initiateCertificatesVerification } from '../../interface/functions';
@@ -112,10 +112,14 @@ class RevokedCertificateCardList extends Component {
       revokeCertificateIsVisible: true,
     });
   }
-  handleRevokeOk = () => {
+  handleRevokeOk = async () => {
     this.setState({ loading: true });
     if (this.state.revokeHolder.length > 0) {
-      console.log(this.state.revokeHolder,"holder id")
+      console.log(this.state.revokeHolder,"holder id");
+      let rawData = await axios.get("http://localhost:7001/issuer/certificate/"+this.state.revokeHolder);
+      let certificate = rawData.data.data.result;
+      await initiateCertificateRevokation(certificate);
+      console.log(certificate);
       setTimeout(() => {
             this.setState({ loading: false, revokeCertificateIsVisible: false,revokeHolder:" " });
           }, 2000);
@@ -214,7 +218,7 @@ class RevokedCertificateCardList extends Component {
     const { revokedIsVisible, revokeCertificateIsVisible, loading } = this.state;
     return (
       <div>
-         
+
         <br />
         <h2>All Revoked Certificates</h2>
         <Button type="danger" size="large" onClick={this.onRevokeCert}>Revoke a Certificate</Button>
@@ -246,7 +250,7 @@ class RevokedCertificateCardList extends Component {
                 </List.Item>
               )}
             />):(<p>No Data</p>)}
-            
+
           </Row>
         </div>
         <div>
