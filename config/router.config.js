@@ -26,6 +26,7 @@ export default [
     routes: [
       // dashboard
       { path: '/', redirect: '/list/participantslist' },
+      { path: '/dashboard', redirect: '/list/participantslist' },
       // {
       //   path: '/dashboard',
       //   name: 'dashboard',
