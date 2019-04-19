@@ -137,8 +137,10 @@ class Step1 extends React.PureComponent {
   generateParticipantsListOptions() {
     console.log("here")
     let arr = []
+    console.log(this.state.participantsData)
     for (let i = 0; i < this.state.participantsData.length; i++) {
-      arr.push(<Option key={this.state.participantsData[i].blockstack_id + "," + this.state.participantsData[i].name + "," + this.state.participantsData[i].team}>{this.state.participantsData[i].name}</Option>);
+
+      arr.push(<Option key={this.state.participantsData[i].blockstack_id + "," + this.state.participantsData[i].name + "," + this.state.participantsData[i].team}>{this.state.participantsData[i].email}</Option>);
     }
     this.setState({
       participantsSelectionData: arr
