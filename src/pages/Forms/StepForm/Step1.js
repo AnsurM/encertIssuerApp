@@ -54,7 +54,7 @@ class Step1 extends React.PureComponent {
     // domain: '',
     // description: '',
     issue_date: '',
-    // achievement_title: '',
+    achievement_title: 'Select Achievement',
     participants: '',
     participantsData: {},
     participantsSelectionData: [],
@@ -66,7 +66,7 @@ class Step1 extends React.PureComponent {
   }
 
   componentDidMount() {
-    axios.get("http://localhost:7001/issuer/participant")
+    axios.get("https://encert-server.herokuapp.com/issuer/participant")
       .then((response) => {
         // if(response.data[0].address) {
         console.log("data  from server", response.data.data.results);
@@ -154,11 +154,12 @@ class Step1 extends React.PureComponent {
 
   }
 
-  achievementHandleChange(event) {
-    console.log(event.target.value, "title")
+  achievementHandleChange = (event) => {
+
+    console.log("Achievement is: ", event);
     this.setState({
 
-      achievement_title: event.target.value
+      achievement_title: event
 
     })
   }
@@ -193,6 +194,10 @@ class Step1 extends React.PureComponent {
       issue_date: dateString
 
     })
+  }
+
+  onSelectcAchievement = (event) => {
+    console.log("Event fired by: ", event);
   }
 
   render() {
@@ -329,10 +334,51 @@ class Step1 extends React.PureComponent {
             <Input placeholder="Proquest" onChange={this.eventHandleChange.bind(this)} />
           </Form.Item>
 
+          <Form.Item label="Achievement">
+          <span>
+            {/* <Dropdown overlay={
+                    <Menu >
+                    <Menu.Item key="1">1st menu item</Menu.Item>
+                    <Menu.Item key="2">2nd memu item</Menu.Item>
+                    <Menu.Item key="3">3rd menu item</Menu.Item>
+                  </Menu>
+              }>
+                  <a className="ant-dropdown-link" href="#">
+                    Hover me <Icon type="down" />
+                  </a>
+              </Dropdown> */}
 
-          <Form.Item {...formItemLayout} label="Achievement">
-            <Input placeholder="Runner Up" onChange={this.achievementHandleChange.bind(this)} />
+            <Select
+              value={this.state.achievement_title}
+              // size={size}
+              style={{ width: '32%' }}
+              onChange={this.achievementHandleChange}
+            >
+              <Option value="Winner">Winner</Option>
+              <Option value="Runner Up">Runner Up</Option>
+              <Option value="Participant">Participant</Option>
+            </Select>
+          </span>
           </Form.Item>
+          {/* <Form.Item {...formItemLayout} label="Achievement">
+            <Input placeholder="Runner Up" onChange={this.achievementHandleChange.bind(this)} />
+            <Dropdown overlay={
+                  <Menu >
+                  <Menu.Item key="1">1st menu item</Menu.Item>
+                  <Menu.Item key="2">2nd memu item</Menu.Item>
+                  <Menu.Item key="3">3rd menu item</Menu.Item>
+                </Menu>
+            } />
+          </Form.Item> */}
+          {/* <Form.Item label="Achievement">
+          <Dropdown overlay={
+                  <Menu >
+                  <Menu.Item key="1">1st menu item</Menu.Item>
+                  <Menu.Item key="2">2nd memu item</Menu.Item>
+                  <Menu.Item key="3">3rd menu item</Menu.Item>
+                </Menu>
+            } />
+          </Form.Item> */}
 
 
           {/* <Form.Item {...formItemLayout} label="Domain">
@@ -344,7 +390,7 @@ class Step1 extends React.PureComponent {
             <Input placeholder="description" onChange={this.descriptionHandleChange.bind(this)} />
           </Form.Item> */}
 
-          <Form.Item {...formItemLayout} label="issue date">
+          <Form.Item {...formItemLayout} label="Issue Date">
             <DatePicker onChange={this.onDateChange.bind(this)} />
           </Form.Item>
 
