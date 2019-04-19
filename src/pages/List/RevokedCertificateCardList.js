@@ -163,7 +163,7 @@ class RevokedCertificateCardList extends Component {
   }
   componentDidMount() {
 
-    axios.get("http://localhost:7001/issuer/certificate")
+    axios.get("https://encert-server.herokuapp.com/issuer/certificate")
       .then(async (response) => {
         // if(response.data[0].address) {
         console.log("data  from server", response.data.data.result);

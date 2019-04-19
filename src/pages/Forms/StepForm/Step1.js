@@ -110,6 +110,7 @@ class Step1 extends React.PureComponent {
         encodedWith0xcertHashes.push('0x' + certificatesHash[i]);
       }
       const accounts = await web3.eth.getAccounts();
+      console.log("Accounts:" + accounts)
       await certificateManager.methods
         .batchIssueCertificate(encodedWith0xcertHashes).send({
           from: accounts[0],
@@ -118,7 +119,7 @@ class Step1 extends React.PureComponent {
         }).on('confirmation', async function() {
           console.log("confirmed")
           if(that.state.isTransactionConfirmed){
-            let certificates =  await axios.post('http://localhost:7001/issuer/certificate', certificatesServer);
+            let certificates =  await axios.post('https://encert-server.herokuapp.com/issuer/certificate', certificatesServer);
             await generateQrCodes(certificates.data.data.results);
             that.setState({isTransactionConfirmed : false});
             router.push('/certificates/issueCertificate/form/step-form/result');

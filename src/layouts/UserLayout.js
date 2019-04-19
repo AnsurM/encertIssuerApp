@@ -45,7 +45,7 @@ const UserLayout = ({ children }) => (
             <span className={styles.title}>Encert</span>
           {/*</Link>*/}
         </div>
-        <div className={styles.desc}>If it's here it's real.</div>
+        <div className={styles.desc}>Humanizing Certifications</div>
       </div>
       {children}
     </div>
