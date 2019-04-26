@@ -23,15 +23,15 @@ export const createMerkleTree = async (certificates) => {
   }
 };
 
-export  const isCertificateRevoked = async (certificateHash) => {
+export const isCertificateRevoked = async (certificateHash) => {
   try {
     let certificateStatus = [];
-    for (let i = 0 ; i < certificateHash.length ; i++){
-      let status = await certificateManager.methods.isCertificateRevoked( '0x'+certificateHash[i]).call();
-      if(status){
+    for (let i = 0; i < certificateHash.length; i++) {
+      let status = await certificateManager.methods.isCertificateRevoked('0x' + certificateHash[i]).call();
+      if (status) {
         certificateStatus.push(true);
       } else {
-        certificateStatus.push(false)
+        certificateStatus.push(false);
       }
     }
     return certificateStatus;
@@ -45,32 +45,31 @@ export  const isCertificateRevoked = async (certificateHash) => {
 export const verifyDataFromContract = async (certificates) => {
   try {
     let certificateStatus = [];
-    for (let i = 0 ; i < certificates.length ; i++){
-      let status = await certificateManager.methods.verifyCertificate('0x4b9b22eb799aee6106afc9c5dab485eafbfee7b9', '0x'+certificates[i]).call();
-      if(status){
+    for (let i = 0; i < certificates.length; i++) {
+      let status = await certificateManager.methods.verifyCertificate('0x4b9b22eb799aee6106afc9c5dab485eafbfee7b9', '0x' + certificates[i]).call();
+      if (status) {
         certificateStatus.push(true);
       } else {
-        certificateStatus.push(false)
+        certificateStatus.push(false);
       }
     }
     return certificateStatus;
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 };
 
 
-
-export const removeUnverifiedCertificates = async (certificatesObject  , certificatesStatus) =>{
+export const removeUnverifiedCertificates = async (certificatesObject, certificatesStatus) => {
   try {
-      let verifiedCertificates = [];
-      for (let i = 0 ; i< certificatesObject.length ; i++){
-        if(certificatesStatus[i]){
-          verifiedCertificates.push(certificatesObject[i])
-        }
+    let verifiedCertificates = [];
+    for (let i = 0; i < certificatesObject.length; i++) {
+      if (certificatesStatus[i]) {
+        verifiedCertificates.push(certificatesObject[i]);
       }
-      return verifiedCertificates;
-  }catch (e) {
+    }
+    return verifiedCertificates;
+  } catch (e) {
     console.log(e);
   }
 };
@@ -80,10 +79,10 @@ export const initiateCertificatesVerification = async (certificatesObject) => {
     let certificatesArray = await convertObjectIntoArray(certificatesObject);
     let certificatesHash = await createMerkleTree(certificatesArray);
     let certificatesStatus = await verifyDataFromContract(certificatesHash);
-    let verifiedCertificates = await removeUnverifiedCertificates(certificatesObject , certificatesStatus);
+    let verifiedCertificates = await removeUnverifiedCertificates(certificatesObject, certificatesStatus);
     return verifiedCertificates;
 
-  }catch (e) {
+  } catch (e) {
     console.log(e);
   }
 };
@@ -93,78 +92,78 @@ export const initiateRevokeCertificationVerification = async (certificatesObject
     let certificatesArray = await convertObjectIntoArray(certificatesObject);
     let certificatesHash = await createMerkleTree(certificatesArray);
     let certificatesStatus = await isCertificateRevoked(certificatesHash);
-    let revokedCertificates = await removeUnverifiedCertificates(certificatesObject , certificatesStatus);
+    let revokedCertificates = await removeUnverifiedCertificates(certificatesObject, certificatesStatus);
     return revokedCertificates;
-  }catch (e) {
+  } catch (e) {
 
   }
 };
 
 export const convertObjectIntoArray = async (certificates) => {
   try {
-      let certArrayForTree = [];
-      for ( let i = 0 ; i< certificates.length ; i++){
-        certArrayForTree.push([
-          certificates[i].achievement_title,
-          certificates[i].blockstack_id,
-          certificates[i].event_name,
-          certificates[i].issue_date,
-          certificates[i].issuer_name,
-          certificates[i].receiver_name,
-          certificates[i].team_name
-        ])
-      }
-      return certArrayForTree;
+    let certArrayForTree = [];
+    for (let i = 0; i < certificates.length; i++) {
+      certArrayForTree.push([
+        certificates[i].achievement_title,
+        certificates[i].blockstack_id,
+        certificates[i].event_name,
+        certificates[i].issue_date,
+        certificates[i].issuer_name,
+        certificates[i].receiver_name,
+        certificates[i].team_name,
+      ]);
+    }
+    return certArrayForTree;
 
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 };
 
 export const initiateCertificateRevokation = async (certificateObject) => {
   try {
-    let certArray = await  convertObjectIntoArray(certificateObject);
-    let certHash  = await createMerkleTree(certArray);
+    let certArray = await convertObjectIntoArray(certificateObject);
+    let certHash = await createMerkleTree(certArray);
     console.log(certHash);
     let revokeCertificate = await revokeCertificate(certHash);
-    console.log(revokeCertificate)
-  }catch (e) {
+    console.log(revokeCertificate);
+  } catch (e) {
 
   }
 };
 
 export const generateQrCodes = async (certificates) => {
   try {
-    for( let i = 0 ; i < certificates.length ; i++) {
-      let qr = await QRCode.toDataURL("https://encert-server.herokuapp.com/issuer/certificate/"+certificates[i]._id);
-      await download(qr ,`${certificates[i].receiver_name} , team ${certificates[i].team_name}.png`);
+    for (let i = 0; i < certificates.length; i++) {
+      let qr = await QRCode.toDataURL('https://encert.app/certificate?' + certificates[i]._id);
+      await download(qr, `${certificates[i].receiver_name} , team ${certificates[i].team_name}.png`);
     }
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 };
 
 export const revokeCertificate = async (certificateHash) => {
   try {
     console.log(certificateHash);
-    let certHashWith0x = '0x'+certificateHash;
+    let certHashWith0x = '0x' + certificateHash;
     const accounts = await web3.eth.getAccounts();
     await certificateManager.methods
       .revokeCertificate(certHashWith0x).send({
         from: accounts[0],
       }).on('transactionHash', (hash) => {
-        that.setState({transactionHash: 'https://rinkeby.etherscan.io/tx/' + hash})
+        that.setState({ transactionHash: 'https://rinkeby.etherscan.io/tx/' + hash });
       }).on('confirmation', async function() {
-        console.log("confirmed")
-        if(that.state.isTransactionConfirmed){
-          console.log(certificatesServer)
+        console.log('confirmed');
+        if (that.state.isTransactionConfirmed) {
+          console.log(certificatesServer);
           // await axios.post('http://localhost:7001/issuer/certificate', certificatesServer);
-          that.setState({isTransactionConfirmed : false});
+          that.setState({ isTransactionConfirmed: false });
           router.push('/certificates/issueCertificate/form/step-form/result');
         }
 
-        that.setState({isTransactionConfirmed: true});
-        console.log(that.state)
+        that.setState({ isTransactionConfirmed: true });
+        console.log(that.state);
         return true;
       });
 
