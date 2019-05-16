@@ -48,10 +48,14 @@ state={
 
         console.log("data  from server", response.data.data.result);
         let certificates = response.data.data.result;
-        let verifiedCertificates = await initiateCertificatesVerification(certificates);
+        // let verifiedCertificates = await initiateCertificatesVerification(certificates);
+        // this.setState({
+        //   certificateData: verifiedCertificates
+        // });
+
         this.setState({
-          certificateData: verifiedCertificates
-        });
+          certificateData: certificates
+        })
 
         console.log(this.state.certificateData)
 
